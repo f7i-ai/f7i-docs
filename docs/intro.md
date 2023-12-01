@@ -26,9 +26,17 @@ Get started by **creating a login**.
 
 3. Complete the form and hit register.
 
-    > Please use your company email address.
+    :::info
 
-    > Passwords must be at least 12 characters and contain an uppercase, a lowercase, a numeral and a special character.
+    Please use your company email address.
+
+    :::
+
+    :::info
+
+    Passwords must be at least 12 characters and contain an uppercase, a lowercase, a numeral and a special character.
+
+    :::
 
 1. To verify your email, we'll send you a code.
 1. Great! You're all set. After successfully creating an account, you'll be redirect to the dashboard page.

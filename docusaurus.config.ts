@@ -4,7 +4,7 @@ import type * as Preset from '@docusaurus/preset-classic';
 
 const config: Config = {
   title: 'Factory AI',
-  tagline: 'Dinosaurs are cool',
+  tagline: 'Enabling manufacturing innovation for all',
   favicon: 'img/favicon.ico',
 
   // Set the production url of your site here
@@ -73,7 +73,7 @@ const config: Config = {
         // {to: '/blog', label: 'Blog', position: 'left'},
         {
           href: 'https://app.f7i.ai',
-          label: 'App',
+          label: 'Sign In',
           position: 'right',
         },
       ],
@@ -90,23 +90,15 @@ const config: Config = {
             },
           ],
         },
-        // {
-        //   title: 'Community',
-        //   items: [
-        //     {
-        //       label: 'Stack Overflow',
-        //       href: 'https://stackoverflow.com/questions/tagged/docusaurus',
-        //     },
-        //     {
-        //       label: 'Discord',
-        //       href: 'https://discordapp.com/invite/docusaurus',
-        //     },
-        //     {
-        //       label: 'Twitter',
-        //       href: 'https://twitter.com/docusaurus',
-        //     },
-        //   ],
-        // },
+        {
+          title: 'Community',
+          items: [
+            {
+              label: 'LinkedIn',
+              href: 'https://www.linkedin.com/company/factory-ai/',
+            }
+          ],
+        },
         {
           title: 'More',
           items: [
@@ -121,7 +113,7 @@ const config: Config = {
           ],
         },
       ],
-      copyright: `Copyright © ${new Date().getFullYear()} Factory AI, Pty Ltd. Built with Docusaurus.`,
+      copyright: `Copyright © ${new Date().getFullYear()} Factory AI Pty Ltd.`,
     },
     prism: {
       theme: prismThemes.github,
