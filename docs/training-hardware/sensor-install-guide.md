@@ -18,7 +18,7 @@ Optimal sensor placement is determined by:
 ## Examples
 ### Example 1 - Primary, secondary, tertiary
 The blue line shows the distance to the vibration source.
-The following image of a roller bearing with the primary (green), secondary (yellow) and tertiary (green) locations marked.
+The following image of a roller bearing with the primary (red), secondary (yellow) and tertiary (green) locations marked.
 
 ![Example 1 with three options](img/IMG_3252%20Medium.jpeg)
 ### Example 2 - Multiple sensors, to detect different failures
