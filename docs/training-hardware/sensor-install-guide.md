@@ -37,6 +37,12 @@ In some cases, space constraints prevent ideal sensor placement on machines like
 
 ![Example 4 with a small motor and fan](img/DSC_9423%20Medium.jpeg)
 
+## Adhesive
+We recommend using three types of loctite.
+- Flat surfaces: Loctite 454
+- Slightly curved surfaces: Loctite 3090
+- High temperature (+80ºC) applications: Loctite 4070
+
 ## Installation Steps
 
 1. Clean surface using isopropyl wipes
