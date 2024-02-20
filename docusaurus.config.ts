@@ -104,7 +104,7 @@ const config: Config = {
           items: [
             {
               label: 'Support',
-              href: 'mailto:tim@f7i.ai'
+              href: 'mailto:tim+support@f7i.ai'
             },
             {
               label: 'App',
