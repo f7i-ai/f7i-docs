@@ -16,7 +16,7 @@ Get started by **creating a login**.
 
 ## Creating a login
 
-1. Navigate to https://app.f7i.ai/login.
+1. Navigate to https://[customer domain].f7i.ai/login. You can find your [customer domain] in the sign-in instructions.
 
 ![Login Page](img/login.png)
 
