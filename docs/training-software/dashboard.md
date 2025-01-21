@@ -7,7 +7,7 @@ sidebar_position: 2
 ## Overview
 The Dashboard is designed to provide engineers, maintenance and management teams with a comprehensive summary of the asset health at their site(s).
 
-![Dashboard](static/dashboard.png)
+![Dashboard](static/dashboard-updated.png)
 
 ## Key Features
 ### 1. Metrics Display

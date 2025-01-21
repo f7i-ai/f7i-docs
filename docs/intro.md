@@ -14,23 +14,14 @@ Get started by **creating a login**.
 
 - A modern desktop browser. We recommend Google Chrome and Firefox.
 
-## Creating a login
+## Logging in
 
-1. Navigate to https://[customer domain].f7i.ai/login. You can find your [customer domain] in the sign-in instructions.
+1. Navigate to https://[customer domain].f7i.ai/login. You can find your [customer domain] in the sign-in instructions via email.
 
 ![Login Page](img/login.png)
 
-2. Click "Sign Up".
-
-![Sign Up Page](img/signup.png)
-
-3. Complete the form and hit register.
-
-    :::info
-
-    Please use your company email address.
-
-    :::
+2. Enter in your temporary credentials sent to in the sign-in instructions via email.
+3. You will be asked to set a new password.
 
     :::info
 
@@ -38,5 +29,4 @@ Get started by **creating a login**.
 
     :::
 
-1. To verify your email, we'll send you a code.
 1. Great! You're all set. After successfully creating an account, you'll be redirect to the dashboard page.
