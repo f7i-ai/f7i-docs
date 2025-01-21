@@ -8,7 +8,7 @@ Let's discover **Factory AI in less than 5 minutes**.
 
 ## Getting Started
 
-Get started by **creating a login**.
+Get started by **by logging in**.
 
 ### What you'll need
 
