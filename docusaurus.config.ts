@@ -54,6 +54,22 @@ const config: Config = {
     ],
   ],
 
+  // Client-side redirects
+  clientModules: [],
+  plugins: [
+    [
+      '@docusaurus/plugin-client-redirects',
+      {
+        redirects: [
+          {
+            from: '/',
+            to: '/docs/intro',
+          },
+        ],
+      },
+    ],
+  ],
+
   themeConfig: {
     // Replace with your project's social card
     image: 'img/docusaurus-social-card.jpg',
@@ -62,6 +78,7 @@ const config: Config = {
       logo: {
         alt: 'Factory AI Logo',
         src: 'img/logo.png',
+        href: '/docs/intro',
       },
       items: [
         {
