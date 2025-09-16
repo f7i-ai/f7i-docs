@@ -56,19 +56,7 @@ const config: Config = {
 
   // Client-side redirects
   clientModules: [],
-  plugins: [
-    [
-      '@docusaurus/plugin-client-redirects',
-      {
-        redirects: [
-          {
-            from: '/',
-            to: '/docs/intro',
-          },
-        ],
-      },
-    ],
-  ],
+  plugins: [],
 
   themeConfig: {
     // Replace with your project's social card
