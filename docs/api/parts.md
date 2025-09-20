@@ -16,6 +16,15 @@ The Parts API provides endpoints for managing spare parts and components in your
 | PUT | `/parts/{partId}` | Update a part |
 | DELETE | `/parts/{partId}` | Delete a part |
 
+## Photo Management Endpoints
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/parts/{partId}/photos` | List part photos |
+| POST | `/parts/{partId}/photos/presigned-url` | Get presigned upload URL |
+| POST | `/parts/{partId}/photos` | Add photo metadata |
+| DELETE | `/parts/{partId}/photos/{mediaId}` | Delete part photo |
+
 ## List Parts
 
 Retrieves a list of all parts.
@@ -355,5 +364,215 @@ Supported units of measure:
 {
   "error": "Part number already exists",
   "partNumber": "SKF-6204"
+}
+```
+
+## Part Photos
+
+### List Part Photos
+
+Retrieves a list of all photos associated with a specific part.
+
+**Endpoint:** `GET /parts/{partId}/photos`
+
+**Authentication:** Required
+
+**Path Parameters:**
+- `partId`: Unique identifier of the part
+
+**Response:**
+```json
+{
+  "photos": [
+    {
+      "id": "photo-001",
+      "filename": "bearing_6204_front.jpg",
+      "type": "image",
+      "size": 245760,
+      "uploadedBy": "user-001",
+      "uploadedAt": "2024-10-15T09:30:00Z",
+      "thumbnailUrl": "https://s3.amazonaws.com/bucket/thumbs/photo-001.jpg",
+      "url": "https://s3.amazonaws.com/bucket/photos/photo-001.jpg"
+    },
+    {
+      "id": "photo-002", 
+      "filename": "bearing_6204_side.jpg",
+      "type": "image",
+      "size": 312480,
+      "uploadedBy": "user-001",
+      "uploadedAt": "2024-10-15T09:32:00Z",
+      "thumbnailUrl": "https://s3.amazonaws.com/bucket/thumbs/photo-002.jpg",
+      "url": "https://s3.amazonaws.com/bucket/photos/photo-002.jpg"
+    }
+  ]
+}
+```
+
+**Example Request:**
+```bash
+curl -X GET "https://your-api-domain.com/prod/parts/part-001/photos" \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json"
+```
+
+### Get Presigned Upload URL
+
+Generates a presigned URL for uploading a photo directly.
+
+**Endpoint:** `POST /parts/{partId}/photos/presigned-url`
+
+**Authentication:** Required
+
+**Path Parameters:**
+- `partId`: Unique identifier of the part
+
+**Request Body:**
+```json
+{
+  "filename": "bearing_installation.jpg",
+  "contentType": "image/jpeg",
+  "size": 1048576
+}
+```
+
+**Response:**
+```json
+{
+  "uploadUrl": "https://s3.amazonaws.com/bucket/upload-url?signature=...",
+  "mediaId": "photo-003",
+  "fields": {
+    "key": "parts/part-001/photos/photo-003.jpg",
+    "AWSAccessKeyId": "AKIAI...",
+    "policy": "eyJ...",
+    "signature": "..."
+  },
+  "expiresAt": "2024-10-15T10:00:00Z"
+}
+```
+
+**Example Request:**
+```bash
+curl -X POST "https://your-api-domain.com/prod/parts/part-001/photos/presigned-url" \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "filename": "bearing_installation.jpg",
+    "contentType": "image/jpeg",
+    "size": 1048576
+  }'
+```
+
+### Add Photo Metadata
+
+Adds photo metadata after successful upload.
+
+**Endpoint:** `POST /parts/{partId}/photos`
+
+**Authentication:** Required
+
+**Path Parameters:**
+- `partId`: Unique identifier of the part
+
+**Request Body:**
+```json
+{
+  "mediaId": "photo-003",
+  "filename": "bearing_installation.jpg",
+  "type": "image",
+  "size": 1048576,
+  "description": "Installation view of bearing in housing"
+}
+```
+
+**Response:**
+```json
+{
+  "id": "photo-003",
+  "filename": "bearing_installation.jpg",
+  "type": "image",
+  "size": 1048576,
+  "description": "Installation view of bearing in housing",
+  "uploadedBy": "user-001",
+  "uploadedAt": "2024-10-15T10:15:00Z",
+  "thumbnailUrl": "https://s3.amazonaws.com/bucket/thumbs/photo-003.jpg",
+  "url": "https://s3.amazonaws.com/bucket/photos/photo-003.jpg"
+}
+```
+
+**Example Request:**
+```bash
+curl -X POST "https://your-api-domain.com/prod/parts/part-001/photos" \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "mediaId": "photo-003",
+    "filename": "bearing_installation.jpg",
+    "type": "image",
+    "size": 1048576,
+    "description": "Installation view of bearing in housing"
+  }'
+```
+
+### Delete Part Photo
+
+Removes a photo from a part
+
+**Endpoint:** `DELETE /parts/{partId}/photos/{mediaId}`
+
+**Authentication:** Required
+
+**Path Parameters:**
+- `partId`: Unique identifier of the part
+- `mediaId`: Unique identifier of the photo
+
+**Response:**
+```json
+{
+  "message": "Photo deleted successfully",
+  "deletedAt": "2024-10-15T16:30:00Z"
+}
+```
+
+**Example Request:**
+```bash
+curl -X DELETE "https://your-api-domain.com/prod/parts/part-001/photos/photo-003" \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json"
+```
+
+## Photo Management Guidelines
+
+### Supported File Formats
+- **Images**: JPG, JPEG, PNG, GIF, WebP
+- **Maximum File Size**: 25MB per image
+- **Recommended Resolution**: 1920x1080 or higher for best quality
+
+### Error Responses
+
+#### 400 Bad Request
+```json
+{
+  "error": "Invalid file format",
+  "details": {
+    "contentType": "File must be a valid image format",
+    "size": "File size must not exceed 25MB"
+  }
+}
+```
+
+#### 404 Not Found
+```json
+{
+  "error": "Part not found",
+  "partId": "part-001"
+}
+```
+
+#### 413 Payload Too Large
+```json
+{
+  "error": "File too large",
+  "maxSize": "10MB",
+  "receivedSize": "15MB"
 }
 ```

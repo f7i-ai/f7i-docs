@@ -358,6 +358,12 @@ Deletes a work order from the system.
 
 ## Work Order Media
 
+The work order media system follows the same pattern as the unified photo management system used for parts and assets, providing consistent photo management capabilities across all entity types.
+
+### Photo Management Consistency
+
+Work order media endpoints use the same underlying photo management infrastructure as parts and assets
+
 ### List Media
 
 **Endpoint:** `GET /work-orders/{workOrderId}/media`
@@ -538,3 +544,11 @@ Deletes a work order from the system.
   "reason": "Work order is in progress"
 }
 ```
+
+## Related Photo Management Documentation
+
+For detailed information about the photo management system that work order media is built upon, see:
+
+- **[Parts Photo API](./parts.md#part-photos)**: Detailed photo management endpoints for parts
+- **[Assets Photo API](./assets.md#asset-photos)**: Asset photo management and organization
+

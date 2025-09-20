@@ -480,6 +480,177 @@ Customers can define their own technical specification fields as key/value pairs
 - **Purchase Order Tracking**: Track orders from placement to receipt
 - **Receiving Integration**: Update inventory from purchase receipts
 
+## Parts Photo Management
+
+### Overview
+
+The parts photo management system provides comprehensive visual documentation for inventory items, enabling better identification, quality control, and maintenance procedures. Photos help technicians quickly identify the correct parts and understand their condition before installation.
+
+### Photo Features
+
+#### Visual Part Identification
+- **High-Resolution Images**: Store detailed photos of parts for accurate identification
+- **Multiple Angles**: Capture parts from different perspectives
+- **Condition Documentation**: Before and after photos for quality tracking
+- **Installation Examples**: Reference photos showing proper installation
+
+#### Photo Organization
+- **Automatic Thumbnails**: System generates thumbnails for quick browsing
+- **Searchable Metadata**: Add descriptions and tags to photos
+- **Version Control**: Track photo updates and changes over time
+- **Mobile Optimization**: Photos optimized for mobile device viewing
+
+### Managing Part Photos
+
+#### Uploading Photos
+
+1. **Access Photo Management**
+   - Navigate to the specific part record
+   - Click on the **Photos** tab
+   - Select **Upload Photo** or use the (+) button
+
+2. **Photo Upload Process**
+   - **Select Files**: Choose one or multiple image files (JPG, PNG, GIF)
+   - **Add Descriptions**: Provide meaningful descriptions for each photo
+   - **Set Categories**: Tag photos by type (front view, side view, nameplate, etc.)
+   - **Upload Progress**: Monitor upload progress and completion
+
+3. **Photo Quality Guidelines**
+   - **File Size**: Maximum 10MB per image
+   - **Resolution**: Minimum 1920x1080 recommended for detail
+   - **Format**: JPG, PNG, GIF, or WebP formats supported
+   - **Lighting**: Ensure adequate lighting for clear detail visibility
+
+#### Photo Organization
+
+##### Photo Categories
+- **Reference Photos**: Standard part appearance and specifications
+  - Front view, side view, top view
+  - Nameplate and specification labels
+  - Packaging and manufacturer markings
+  
+- **Condition Photos**: Part quality and wear documentation
+  - New part condition baseline
+  - Wear pattern documentation
+  - Damage assessment photos
+  - Quality control inspection results
+
+- **Installation Photos**: Usage and application examples
+  - Proper installation orientation
+  - Assembly configuration examples
+  - Tool and equipment requirements
+  - Safety considerations and PPE
+
+- **Comparison Photos**: Different part variants and alternatives
+  - OEM vs aftermarket comparison
+  - Different manufacturer options
+  - Size and dimension comparisons
+  - Performance characteristic differences
+
+##### Photo Management Features
+
+**Bulk Upload Operations**
+- **Multiple File Selection**: Upload multiple photos simultaneously
+- **Batch Description**: Apply descriptions to multiple photos
+- **Progress Tracking**: Monitor upload status for all files
+- **Error Handling**: Identify and retry failed uploads
+
+**Photo Editing and Enhancement**
+- **Thumbnail Generation**: Automatic thumbnail creation for fast loading
+- **Image Optimization**: Compression for optimal storage and loading
+- **Rotation and Adjustment**: Basic image orientation corrections
+- **Metadata Preservation**: Maintain EXIF data for photo information
+
+**Advanced Photo Features**
+- **Zoom and Detail View**: High-resolution viewing for detailed inspection
+- **Comparison Mode**: Side-by-side comparison of multiple photos
+- **Download Options**: Original and optimized versions available
+- **Print-Ready Versions**: High-quality versions for documentation
+
+### Mobile Photo Management
+
+#### Mobile Photo Capture
+- **Camera Integration**: Direct camera access for immediate photo capture
+- **QR Code Scanning**: Scan part QR codes to associate photos automatically
+- **Offline Capability**: Capture photos offline and sync when connected
+- **GPS Tagging**: Location information for field documentation
+
+#### Field Documentation
+- **Real-time Upload**: Immediate photo upload from field locations
+- **Voice Annotations**: Add voice descriptions that convert to text
+- **Batch Sync**: Sync multiple photos when connection is available
+- **Quality Validation**: Automatic quality checks for uploaded photos
+
+### Photo Integration Features
+
+#### Search and Discovery
+- **Visual Search**: Find parts using photo-based search
+- **Tag-based Filtering**: Filter photos by categories and descriptions
+- **Full-text Search**: Search photo descriptions and metadata
+- **Advanced Filters**: Combine multiple criteria for precise results
+
+#### Maintenance Integration
+- **Work Order Photos**: Link photos to specific maintenance activities
+- **Procedure Documentation**: Visual steps for maintenance procedures
+- **Before/After Documentation**: Track maintenance outcomes with photos
+- **Quality Assurance**: Photo-based quality control processes
+
+#### Inventory Control Integration
+- **Receiving Documentation**: Photo verification of received parts
+- **Condition Assessment**: Visual quality control during receiving
+- **Storage Documentation**: Photos of proper storage conditions
+- **Issue Documentation**: Photo evidence for part issues and returns
+
+### Photo Security and Access Control
+
+#### Access Management
+- **Role-based Permissions**: Control who can view, upload, or delete photos
+- **Audit Trail**: Track all photo-related activities and changes
+- **Secure Storage**: Encrypted storage with secure access protocols
+- **Backup and Recovery**: Automatic backup of all photo data
+
+#### Compliance and Documentation
+- **Regulatory Compliance**: Meet industry documentation requirements
+- **Quality Standards**: Support ISO and other quality management systems
+- **Legal Documentation**: Maintain photo evidence for warranty and legal purposes
+- **Historical Preservation**: Long-term storage for historical documentation
+
+### Best Practices for Part Photography
+
+#### Photo Quality Standards
+- **Lighting Requirements**: Use adequate, even lighting for clear visibility
+- **Background Consistency**: Use neutral backgrounds for better part visibility
+- **Multiple Angles**: Capture front, side, top, and detail views
+- **Scale Reference**: Include size references when helpful
+- **Focus and Clarity**: Ensure sharp focus on important details
+
+#### Documentation Standards
+- **Consistent Naming**: Use standardized naming conventions
+- **Comprehensive Descriptions**: Include detailed, searchable descriptions
+- **Category Tagging**: Apply appropriate category tags
+- **Date and Context**: Include relevant timing and context information
+- **User Attribution**: Track photographer and upload information
+
+#### Workflow Integration
+- **Receiving Process**: Integrate photo capture into receiving workflows
+- **Quality Control**: Use photos as part of quality control procedures
+- **Issue Resolution**: Document problems and solutions with photos
+- **Training Materials**: Use photos for technician training and reference
+
+### Photo Performance and Optimization
+
+#### Storage Optimization
+- **Automatic Compression**: Intelligent compression to reduce storage requirements
+- **Thumbnail Generation**: Fast-loading thumbnails for browsing
+- **CDN Distribution**: Content delivery network for fast global access
+- **Cache Management**: Smart caching for frequently accessed photos
+
+#### Performance Features
+- **Lazy Loading**: Load photos only when needed for better performance
+- **Progressive Loading**: Show low-resolution versions while high-resolution loads
+- **Bandwidth Optimization**: Adaptive quality based on connection speed
+- **Mobile Optimization**: Optimized viewing experience on mobile devices
+
 ## Best Practices
 
 ### Inventory Setup

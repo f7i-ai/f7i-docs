@@ -137,6 +137,97 @@ Use component templates to standardize common equipment configurations:
 
 ## Asset Documentation
 
+### Photo Management
+
+The Asset Registry includes comprehensive photo management capabilities for visual documentation of assets and components.
+
+#### Asset Photo Features
+
+**Visual Asset Documentation**
+- **Multiple Photo Types**: Equipment photos, nameplate images, installation views
+- **Component-Level Photos**: Detailed photos for individual asset components
+- **Condition Tracking**: Before/after photos for maintenance and inspections
+- **Mobile Integration**: Photo capture directly from mobile devices in the field
+
+**Photo Organization**
+- **Hierarchical Structure**: Photos organized by asset and component hierarchy
+- **Automatic Thumbnails**: Quick preview thumbnails for efficient browsing
+- **Smart Categorization**: Organize photos by type, date, and purpose
+- **Search and Filter**: Find photos quickly using tags and descriptions
+
+#### Managing Asset Photos
+
+**Photo Upload Process**
+1. **Navigate to Asset**
+   - Go to the specific asset record in the registry
+   - Select the **Photos** tab from the asset details
+
+2. **Upload Photos**
+   - Click **Upload Photos** or use the (+) button
+   - Select multiple image files (JPG, PNG, GIF, WebP)
+   - Add descriptive titles and categories
+   - Monitor upload progress and completion
+
+3. **Photo Quality Standards**
+   - **Maximum Size**: 10MB per image file
+   - **Recommended Resolution**: 1920x1080 or higher for technical documentation
+   - **Proper Lighting**: Ensure clear visibility of asset details
+   - **Multiple Angles**: Capture comprehensive views of equipment
+
+**Photo Categories for Assets**
+
+*Documentation Photos*
+- **Nameplate and Specifications**: Asset identification and technical data
+- **Installation Views**: Equipment in operational environment
+- **Schematic and Diagram Photos**: Technical drawings and control schematics
+- **Manual and Documentation**: Manufacturer materials and procedures
+
+*Condition Assessment Photos*
+- **Baseline Condition**: Initial installation state for future comparison
+- **Inspection Results**: Regular condition assessment documentation
+- **Wear Patterns**: Progressive deterioration and maintenance needs
+- **Damage Documentation**: Incident reports and repair requirements
+
+*Maintenance Documentation*
+- **Access Points**: Service locations and maintenance positions
+- **Procedure Steps**: Visual maintenance procedure documentation
+- **Tool Requirements**: Required tools and equipment for maintenance
+- **Safety Documentation**: Safety procedures and PPE requirements
+
+#### Mobile Photo Integration
+
+**Field Photography**
+- **QR Code Integration**: Scan asset QR codes to automatically associate photos
+- **Offline Capability**: Capture photos without internet and sync later
+- **GPS Tagging**: Automatic location data for field documentation
+- **Voice Annotations**: Add voice descriptions that convert to text
+
+**Real-time Documentation**
+- **Immediate Upload**: Photos available instantly after capture
+- **Live Sync**: Real-time synchronization across all devices
+- **Quality Validation**: Automatic checks for photo quality and clarity
+- **Batch Processing**: Efficient handling of multiple photos
+
+#### Photo Integration Features
+
+**Asset Hierarchy Integration**
+- **Component Photos**: Photos linked to specific asset components
+- **Parent-Child Relationships**: Navigate photos through asset hierarchy
+- **Cross-Reference Capability**: Link photos across related assets
+- **Version Control**: Track photo updates and historical changes
+
+**Maintenance Integration**
+- **Work Order Photos**: Link photos to specific maintenance activities
+- **Procedure Documentation**: Visual guides for maintenance procedures
+- **Progress Tracking**: Before, during, and after maintenance photos
+- **Quality Assurance**: Photo-based verification of maintenance completion
+
+**Search and Discovery**
+- **Visual Search**: Find assets using photo-based identification
+- **Tag-based Filtering**: Organize and filter photos by custom tags
+- **Full-text Search**: Search photo descriptions and metadata
+- **Advanced Filters**: Combine multiple criteria for precise results
+
 ### Document Management
 
 Store and organize all asset-related documentation:
@@ -164,6 +255,9 @@ Each asset automatically generates a QR code for mobile access:
 - **Work Order Creation**: Create work orders directly from mobile
 - **History Access**: View maintenance history in the field
 - **Update Status**: Report issues and update asset status
+- **Photo Access**: View and capture asset photos directly via QR code
+- **Upload Photos**: Add new photos to assets from mobile devices
+- **Photo Gallery**: Browse existing asset photos in mobile-optimized gallery
 
 ## Maintenance Procedures
 
@@ -282,6 +376,9 @@ Generate comprehensive reports for asset management:
 - **Complete Hierarchy**: Build complete component structures from the start
 - **Regular Updates**: Keep asset information current and accurate
 - **Document Everything**: Upload all relevant documentation and photos
+- **Comprehensive Photos**: Capture multiple angles and detailed views of all assets
+- **Photo Standards**: Maintain consistent photo quality and categorization
+- **Mobile Documentation**: Use mobile devices for real-time photo capture and updates
 
 ### Data Quality
 
