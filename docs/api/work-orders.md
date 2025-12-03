@@ -98,8 +98,8 @@ Retrieves a list of all work orders.
 
 **Example Request:**
 ```bash
-curl -X GET "https://your-api-domain.com/prod/work-orders?status=in_progress&priority=high" \
-  -H "Authorization: Bearer YOUR_TOKEN" \
+curl -X GET "https://api.acme.f7i.ai/prod/work-orders?status=in_progress&priority=high" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json"
 ```
 

@@ -50,8 +50,8 @@ Uploads a new document to the system.
 
 **Example Request (Multipart):**
 ```bash
-curl -X POST "https://your-api-domain.com/prod/documents" \
-  -H "Authorization: Bearer YOUR_TOKEN" \
+curl -X POST "https://api.acme.f7i.ai/prod/documents" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
   -F "file=@manual.pdf" \
   -F "title=Pump Maintenance Manual" \
   -F "description=Complete maintenance procedures for centrifugal pumps" \
@@ -168,8 +168,8 @@ Retrieves metadata for a specific document.
 
 **Example Request:**
 ```bash
-curl -X GET "https://your-api-domain.com/prod/documents/doc-001" \
-  -H "Authorization: Bearer YOUR_TOKEN" \
+curl -X GET "https://api.acme.f7i.ai/prod/documents/doc-001" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json"
 ```
 
@@ -200,8 +200,8 @@ Deletes a document from the system.
 
 **Example Request:**
 ```bash
-curl -X DELETE "https://your-api-domain.com/prod/documents/doc-001" \
-  -H "Authorization: Bearer YOUR_TOKEN" \
+curl -X DELETE "https://api.acme.f7i.ai/prod/documents/doc-001" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json"
 ```
 
@@ -234,8 +234,8 @@ Generates a presigned URL for downloading a document.
 
 **Example Request:**
 ```bash
-curl -X GET "https://your-api-domain.com/prod/documents/doc-001/download-url?expiresIn=7200" \
-  -H "Authorization: Bearer YOUR_TOKEN" \
+curl -X GET "https://api.acme.f7i.ai/prod/documents/doc-001/download-url?expiresIn=7200" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json"
 ```
 

@@ -95,8 +95,8 @@ Retrieves a list of all part orders.
 
 **Example Request:**
 ```bash
-curl -X GET "https://your-api-domain.com/prod/part-orders?status=pending" \
-  -H "Authorization: Bearer YOUR_TOKEN" \
+curl -X GET "https://api.acme.f7i.ai/prod/part-orders?status=pending" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json"
 ```
 

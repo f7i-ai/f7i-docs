@@ -71,8 +71,8 @@ Retrieves a list of all parts.
 
 **Example Request:**
 ```bash
-curl -X GET "https://your-api-domain.com/prod/parts?category=Bearings&inStock=true" \
-  -H "Authorization: Bearer YOUR_TOKEN" \
+curl -X GET "https://api.acme.f7i.ai/prod/parts?category=Bearings&inStock=true" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json"
 ```
 
@@ -395,7 +395,7 @@ Retrieves a list of all photos associated with a specific part.
       "url": "https://s3.amazonaws.com/bucket/photos/photo-001.jpg"
     },
     {
-      "id": "photo-002", 
+      "id": "photo-002",
       "filename": "bearing_6204_side.jpg",
       "type": "image",
       "size": 312480,
@@ -410,8 +410,8 @@ Retrieves a list of all photos associated with a specific part.
 
 **Example Request:**
 ```bash
-curl -X GET "https://your-api-domain.com/prod/parts/part-001/photos" \
-  -H "Authorization: Bearer YOUR_TOKEN" \
+curl -X GET "https://api.acme.f7i.ai/prod/parts/part-001/photos" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json"
 ```
 
@@ -452,8 +452,8 @@ Generates a presigned URL for uploading a photo directly.
 
 **Example Request:**
 ```bash
-curl -X POST "https://your-api-domain.com/prod/parts/part-001/photos/presigned-url" \
-  -H "Authorization: Bearer YOUR_TOKEN" \
+curl -X POST "https://api.acme.f7i.ai/prod/parts/part-001/photos/presigned-url" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "filename": "bearing_installation.jpg",
@@ -501,8 +501,8 @@ Adds photo metadata after successful upload.
 
 **Example Request:**
 ```bash
-curl -X POST "https://your-api-domain.com/prod/parts/part-001/photos" \
-  -H "Authorization: Bearer YOUR_TOKEN" \
+curl -X POST "https://api.acme.f7i.ai/prod/parts/part-001/photos" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "mediaId": "photo-003",
@@ -535,8 +535,8 @@ Removes a photo from a part
 
 **Example Request:**
 ```bash
-curl -X DELETE "https://your-api-domain.com/prod/parts/part-001/photos/photo-003" \
-  -H "Authorization: Bearer YOUR_TOKEN" \
+curl -X DELETE "https://api.acme.f7i.ai/prod/parts/part-001/photos/photo-003" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json"
 ```
 

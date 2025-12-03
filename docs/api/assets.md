@@ -53,7 +53,7 @@ Retrieves a list of all assets.
           "assets": [
             {
               "assetId": "asset-123",
-              "name": "Pump A1", 
+              "name": "Pump A1",
               "description": "Main cooling water pump",
               "location": "Building 1",
               "category": "Pumps",
@@ -83,8 +83,8 @@ Retrieves a list of all assets.
 
 **Example Request:**
 ```bash
-curl -X GET "https://your-api-domain.com/prod/assets?limit=20&type=pump" \
-  -H "Authorization: Bearer YOUR_TOKEN" \
+curl -X GET "https://api.acme.f7i.ai/prod/assets?limit=20&type=pump" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json"
 ```
 
@@ -140,8 +140,8 @@ Creates a new asset.
 
 **Example Request:**
 ```bash
-curl -X POST "https://your-api-domain.com/prod/assets" \
-  -H "Authorization: Bearer YOUR_TOKEN" \
+curl -X POST "https://api.acme.f7i.ai/prod/assets" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "name": "Pump A1",
@@ -193,8 +193,8 @@ Retrieves details of a specific asset.
 
 **Example Request:**
 ```bash
-curl -X GET "https://your-api-domain.com/prod/assets/asset-123" \
-  -H "Authorization: Bearer YOUR_TOKEN" \
+curl -X GET "https://api.acme.f7i.ai/prod/assets/asset-123" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json"
 ```
 
@@ -242,8 +242,8 @@ Updates an existing asset.
 
 **Example Request:**
 ```bash
-curl -X PUT "https://your-api-domain.com/prod/assets/asset-123" \
-  -H "Authorization: Bearer YOUR_TOKEN" \
+curl -X PUT "https://api.acme.f7i.ai/prod/assets/asset-123" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "status": "maintenance",
@@ -272,8 +272,8 @@ Deletes an asset from the system.
 
 **Example Request:**
 ```bash
-curl -X DELETE "https://your-api-domain.com/prod/assets/asset-123" \
-  -H "Authorization: Bearer YOUR_TOKEN" \
+curl -X DELETE "https://api.acme.f7i.ai/prod/assets/asset-123" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json"
 ```
 
@@ -317,8 +317,8 @@ Motor B2,Electric Motor,Building 2,M002-2024,PowerCorp,EM-750,2024-02-01
 
 **Example Request:**
 ```bash
-curl -X POST "https://your-api-domain.com/prod/assets/import" \
-  -H "Authorization: Bearer YOUR_TOKEN" \
+curl -X POST "https://api.acme.f7i.ai/prod/assets/import" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: text/csv" \
   --data-binary @assets.csv
 ```
@@ -391,7 +391,7 @@ Retrieves a list of all photos associated with a specific asset.
       "description": "Front view of Pump A1 showing control panel"
     },
     {
-      "id": "photo-002", 
+      "id": "photo-002",
       "filename": "pump_a1_nameplate.jpg",
       "type": "image",
       "size": 287340,
@@ -407,8 +407,8 @@ Retrieves a list of all photos associated with a specific asset.
 
 **Example Request:**
 ```bash
-curl -X GET "https://your-api-domain.com/prod/assets/asset-123/photos" \
-  -H "Authorization: Bearer YOUR_TOKEN" \
+curl -X GET "https://api.acme.f7i.ai/prod/assets/asset-123/photos" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json"
 ```
 
@@ -449,8 +449,8 @@ Generates a presigned URL for uploading a photo directly.
 
 **Example Request:**
 ```bash
-curl -X POST "https://your-api-domain.com/prod/assets/asset-123/photos/presigned-url" \
-  -H "Authorization: Bearer YOUR_TOKEN" \
+curl -X POST "https://api.acme.f7i.ai/prod/assets/asset-123/photos/presigned-url" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "filename": "motor_inspection.jpg",
@@ -498,8 +498,8 @@ Adds photo metadata after successful upload.
 
 **Example Request:**
 ```bash
-curl -X POST "https://your-api-domain.com/prod/assets/asset-123/photos" \
-  -H "Authorization: Bearer YOUR_TOKEN" \
+curl -X POST "https://api.acme.f7i.ai/prod/assets/asset-123/photos" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "mediaId": "photo-003",
@@ -532,8 +532,8 @@ Removes a photo from an asset and deletes it.
 
 **Example Request:**
 ```bash
-curl -X DELETE "https://your-api-domain.com/prod/assets/asset-123/photos/photo-003" \
-  -H "Authorization: Bearer YOUR_TOKEN" \
+curl -X DELETE "https://api.acme.f7i.ai/prod/assets/asset-123/photos/photo-003" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json"
 ```
 

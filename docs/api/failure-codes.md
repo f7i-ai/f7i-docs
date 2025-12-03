@@ -73,8 +73,8 @@ Retrieves a list of all failure codes.
 
 **Example Request:**
 ```bash
-curl -X GET "https://your-api-domain.com/prod/failurecodes?category=Mechanical" \
-  -H "Authorization: Bearer YOUR_TOKEN" \
+curl -X GET "https://api.acme.f7i.ai/prod/failurecodes?category=Mechanical" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json"
 ```
 

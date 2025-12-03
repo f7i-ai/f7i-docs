@@ -87,8 +87,8 @@ Retrieves a list of all PM procedures.
 
 **Example Request:**
 ```bash
-curl -X GET "https://your-api-domain.com/prod/pms?frequency=monthly" \
-  -H "Authorization: Bearer YOUR_TOKEN" \
+curl -X GET "https://api.acme.f7i.ai/prod/pms?frequency=monthly" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json"
 ```
 

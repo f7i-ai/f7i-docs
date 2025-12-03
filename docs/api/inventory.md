@@ -40,7 +40,7 @@ Retrieves inventory information for all parts.
 [
   {
     "partId": "part-001",
-    "site": "main-facility", 
+    "site": "main-facility",
     "tenantId": "tenant-123",
     "quantity": 15,
     "minStockLevel": 5,
@@ -59,8 +59,8 @@ Retrieves inventory information for all parts.
 
 **Example Request:**
 ```bash
-curl -X GET "https://your-api-domain.com/prod/inventory?lowStock=true" \
-  -H "Authorization: Bearer YOUR_TOKEN" \
+curl -X GET "https://api.acme.f7i.ai/prod/inventory?lowStock=true" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json"
 ```
 
@@ -95,7 +95,7 @@ Retrieves inventory details for a specific part.
 {
   "part": {
     "partId": "part-001",
-    "partNumber": "SKF-6204", 
+    "partNumber": "SKF-6204",
     "name": "Ball Bearing 6204",
     "unit": "each",
     "cost": 75.50
@@ -112,7 +112,7 @@ Retrieves inventory details for a specific part.
       "updatedAt": "2024-10-10T14:30:00Z"
     },
     {
-      "partId": "part-001", 
+      "partId": "part-001",
       "site": "warehouse-2",
       "tenantId": "tenant-123",
       "quantity": 8,
