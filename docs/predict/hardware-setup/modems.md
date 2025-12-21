@@ -8,8 +8,8 @@ sidebar_position: 3
 
 **Document ID:** SOP-HW-001
 **Version:** 1.0
-**Effective Date:** June 17, 2025  
-**Review Date:** December 17, 2025  
+**Effective Date:** June 17, 2025
+**Review Date:** December 17, 2025
 **Owner:** Factory AI
 
 ---
@@ -37,7 +37,7 @@ This procedure outlines the set up of the Outdoor 4G modems that is used to allo
 - [ ] Outdoor modem kit(s)
 - [ ] Hex/Allen keys (included in the kit)
 - [ ] (Optional) Cable ties
-- [ ] Monitron app installed on an iPhone ([iOS app on the App store](https://apps.apple.com/us/app/amazon-monitron/id1563396065)) or Android device ([Android app on the Google Play store](https://play.google.com/store/apps/details?id=aws.monitron.app&hl=en_AU&pli=1))
+- [ ] SKF Axios app (formerly Monitron) installed on an iPhone ([iOS app on the App Store](https://apps.apple.com/us/app/skf-axios/id1563396065)) or Android device ([Android app on Google Play](https://play.google.com/store/apps/details?id=com.skf.axios&hl=en_AU))
 
 ---
 
@@ -71,15 +71,15 @@ This procedure outlines the set up of the Outdoor 4G modems that is used to allo
 ---
 
 ### Step 3: Gateway configuration
-**Action:** Configure the gateway(s) using the Monitron App
+**Action:** Configure the gateway(s) using the SKF Axios App (formerly Monitron)
 
 **Details:**
-1. Find the Monitron project link email. Clicking the link will open the Monitron App.
+1. Find the SKF Axios project link email. Clicking the link will open the SKF Axios App.
 1. Login using the Google SSO credentials provided via email
 1. Once the project is open, in the top bar, select the site
 1. In the top nav (☰ menu) select Gateways
 1. Click Add Gateway
-1. Locate the button on the side of the gateway and press it once (do not hold down). [The gateway lights will change from slow flash between orange and blue, to a rapid flash](https://docs.aws.amazon.com/Monitron/latest/user-guide/LED.html)
+1. Locate the button on the side of the gateway and press it once (do not hold down). The gateway lights will change from slow flash between orange and blue, to a rapid flash.
 1. The phone will try to connect to the gateway using bluetooth. Pair the gateway to the phone by selecting it from the list.
 1. After it connects to the gateway, Amazon Monitron scans for Wi-Fi networks. Choose the **Factory-AI** WiFi SSID being broadcast by the outdoor 4g modem.
 1. The password has been securely shared with to you separately.
@@ -101,7 +101,7 @@ This procedure outlines the set up of the Outdoor 4G modems that is used to allo
 | **Issue** | **Possible Cause** | **Action** |
 |-----------|-------------------|------------|
 | Cannot find the SSID, Can't connect to Wi-Fi | Outdoor 4g modem has been reset | Power on the gateway in the workshop, where you can open the enclosure and see the internal LEDs. Contact Factory AI for further assistance reconfiguring the 4g modem. |
-| Can't configure gateway | Gateway won't pair with device, Gateway isn't in set up mode | Remove Monitron gateway devices from your mobile device. If the gateway lights are not flashing slowly between orange and blue, press and hold the side of the gateway for 7-10 seconds. |
+| Can't configure gateway | Gateway won't pair with device, Gateway isn't in set up mode | Remove gateway devices from your mobile device's Bluetooth settings. If the gateway lights are not flashing slowly between orange and blue, press and hold the side of the gateway for 7-10 seconds. |
 
 ---
 
@@ -118,7 +118,7 @@ After completing this procedure:
 
 ---
 
-**Questions or Issues?**  
+**Questions or Issues?**
 Contact: Tim | tim+support@f7i.ai
 
 *This document is controlled. Printed copies may not reflect the current version.*
