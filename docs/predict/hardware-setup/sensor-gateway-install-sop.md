@@ -30,12 +30,12 @@ This procedure outlines the installation of Factory AI sensors and gateways for 
 
 - **Lockout/Tagout (LOTO):** Equipment must be isolated before sensor installation. Follow site-specific LOTO procedures.
 - **Personal Protective Equipment (PPE):** Wear appropriate PPE at all times, including:
-  - Safety glasses
+  - Safety glasses (if required by site)
   - Gloves (nitrile recommended when handling adhesive)
   - Safety boots
-  - Hearing protection (if required by area)
+  - Hearing protection (if required by site)
   - High-visibility vest (if required by site)
-- **Adhesive Safety:** Loctite products bond skin instantly. Avoid contact with skin and eyes. Keep acetone or debonder available.
+  - FR clothing (if required by site)
 
 ---
 
@@ -70,14 +70,11 @@ Before beginning installation:
 ### Hardware
 - [ ] Sensors (as per installation plan)
 - [ ] Gateway(s)
-- [ ] Gateway power supplies (5V 2A)
-- [ ] Cable ties (for cable management)
-- [ ] Mounting hardware for gateways (if wall mounting)
+- [ ] Gateway power supplies (5V 2A, single phase)
 
 ### Documentation
-- [ ] Installation plan / sensor location diagram
+- [ ] Sensor location map
 - [ ] Asset register or equipment list
-- [ ] This SOP
 
 ---
 
@@ -286,4 +283,3 @@ After completing this procedure:
 Contact: Tim | tim+support@f7i.ai
 
 *This document is controlled. Printed copies may not reflect the current version.*
-
