@@ -65,7 +65,8 @@ Before beginning installation:
 
 ### Adhesive
 - [ ] **[Loctite 454](https://docs.rs-online.com/86cf/0900766b801dff4e.pdf)** – For flat surfaces (general use)
-- [ ] **[Loctite 4070](https://techsil.s3.eu-west-2.amazonaws.com/TE/TDS/HECY50040-tds.pdf)** – For curved surfaces and high temperature applications (+80°C)
+- [ ] **[Loctite 4070](https://techsil.s3.eu-west-2.amazonaws.com/TE/TDS/HECY50040-tds.pdf)** – Excellent for **60–100°C** surface or operating temperature at the mount (including curved surfaces in this temperature band)
+- [ ] **[Loctite HY 4090](https://datasheets.tdx.henkel.com/LOCTITE-HY-4090-en_GL.pdf)** – Best suited when surface or operating temperature **exceeds 100°C**; two-part dual-cartridge product—follow manufacturer mixing and application instructions
 
 ### Hardware
 - [ ] Sensors (as per installation plan)
@@ -240,7 +241,7 @@ Complete gateway installation first to ensure sensors can connect immediately af
 | Gateway shows offline | Network connectivity issue | Power cycle the gateway. Check WiFi/Ethernet connection. Verify SSID and password. |
 | Gateway LED is solid green or slow orange flash | Not connected to cloud | Check modem/network connectivity. Power cycle gateway. |
 | Sensor not appearing in app | Out of range, gateway offline, or sensor not activated | Ensure gateway is online. Verify sensor is within 20m of gateway. Wait up to 1 hour for initial sync. |
-| Sensor won't stay mounted | Surface not clean or wrong adhesive type | Remove sensor, re-clean surface, use appropriate adhesive for surface type. |
+| Sensor won't stay mounted | Surface not clean or wrong adhesive type or temperature band | Remove sensor, re-clean surface. Use adhesive matched to surface geometry and to the mount-point temperature (4070 for 60–100°C, HY 4090 above 100°C; see Required Materials). |
 | Weak sensor signal | Obstruction or distance | Relocate gateway closer or install additional gateway. |
 
 ---
