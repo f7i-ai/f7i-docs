@@ -21,11 +21,10 @@ To add a user:
 1. Fill in all the fields
     1. At least one site must be selected.
 1. Click add user.
-1. The user will receive an email with their temporary credentials and a link to log in.
+1. The user will receive an email invitation with a link to set up their account. The invitation walks them through verifying their email, setting a password, and optionally adding a passkey — see [Accepting Your Invitation](/docs/predict/getting-started/accept-invite) for the user's view of the flow.
 :::tip
-Temporary credentials will expire after seven days. After that, the user will need to be created again.
+Invitations expire if not accepted within the configured window. If a user's invite has expired, you'll need to send a new one from the user list.
 :::
-1. After the user logs in for the first time, they will be asked to change their password.
 
 ![Add user](static/add-user.png)
 

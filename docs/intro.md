@@ -62,7 +62,7 @@ For existing users, you can access your account directly:
 ![Login Page](img/login.png)
 
 :::tip
-New to Factory AI? Your administrator will provide you with login credentials and your organization's specific domain.
+New to Factory AI? Your administrator will send you an email invitation with a link to set up your account. See [Accepting Your Invitation](predict/getting-started/accept-invite) for a walkthrough.
 :::
 
 ## Support & Resources
