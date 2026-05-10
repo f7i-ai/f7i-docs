@@ -99,12 +99,11 @@ When using Email OTP (passwordless login):
 
 ## First-Time Login
 
-If this is your first time logging in:
+If this is your first time accessing Factory AI, you'll arrive via an emailed invitation rather than the login page. The invitation flow walks you through verifying your email, setting a password, and (optionally) adding a passkey.
 
-1. Use the temporary credentials sent in your welcome email
-2. You'll be prompted to set a new password
-3. Follow the password requirements shown above
-4. Once completed, you'll be redirected to the Prevent dashboard
+See [Accepting Your Invitation](/docs/predict/getting-started/accept-invite) for the full step-by-step guide. The same flow applies whether you're joining Predict, Prevent, or both.
+
+After your account is set up, return to the login URL above to sign in normally — the steps above apply from then on.
 
 ## Accessing Different Products
 
