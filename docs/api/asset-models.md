@@ -4,23 +4,25 @@ sidebar_position: 15
 
 # Monitored Assets API
 
+**Service:** `predict` (Predict). All paths on this page start with `/predict`, so the base is `https://api-<your-subdomain>.f7i.ai/predict`.
+
 The Monitored Assets API provides endpoints for listing and managing assets that are being monitored by sensors in the Predict system. This serves as the asset registry for predictive maintenance, allowing you to navigate between assets, areas, and sensors.
 
 ## Endpoints Overview
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| GET | `/asset-models` | List all monitored assets |
-| POST | `/asset-models` | Register a new monitored asset |
-| GET | `/asset-models/{id}` | Get a specific asset |
-| PUT | `/asset-models/{id}` | Update asset metadata |
-| DELETE | `/asset-models/{id}` | Remove an asset |
+| GET | `/predict/asset-models` | List all monitored assets |
+| POST | `/predict/asset-models` | Register a new monitored asset |
+| GET | `/predict/asset-models/{id}` | Get a specific asset |
+| PUT | `/predict/asset-models/{id}` | Update asset metadata |
+| DELETE | `/predict/asset-models/{id}` | Remove an asset |
 
 ## List Monitored Assets
 
 Retrieves a list of monitored assets with optional filtering by company, site, area, or sensor.
 
-**Endpoint:** `GET /asset-models`
+**Endpoint:** `GET /predict/asset-models`
 
 **Authentication:** Required
 
@@ -60,7 +62,7 @@ Retrieves a list of monitored assets with optional filtering by company, site, a
 
 **Example Request:**
 ```bash
-curl -X GET "https://api.acme.f7i.ai/prod/asset-models?companyName=Acme%20Corp&siteName=Main%20Plant" \
+curl -X GET "https://api-acme.f7i.ai/predict/asset-models?companyName=Acme%20Corp&siteName=Main%20Plant" \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json"
 ```
@@ -69,7 +71,7 @@ curl -X GET "https://api.acme.f7i.ai/prod/asset-models?companyName=Acme%20Corp&s
 
 Registers a new asset for monitoring.
 
-**Endpoint:** `POST /asset-models`
+**Endpoint:** `POST /predict/asset-models`
 
 **Authentication:** Required
 
@@ -104,7 +106,7 @@ Registers a new asset for monitoring.
 
 **Example Request:**
 ```bash
-curl -X POST "https://api.acme.f7i.ai/prod/asset-models" \
+curl -X POST "https://api-acme.f7i.ai/predict/asset-models" \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
@@ -121,7 +123,7 @@ curl -X POST "https://api.acme.f7i.ai/prod/asset-models" \
 
 Retrieves a specific monitored asset by ID.
 
-**Endpoint:** `GET /asset-models/{id}`
+**Endpoint:** `GET /predict/asset-models/{id}`
 
 **Authentication:** Required
 
@@ -149,7 +151,7 @@ Retrieves a specific monitored asset by ID.
 
 **Example Request:**
 ```bash
-curl -X GET "https://api.acme.f7i.ai/prod/asset-models/a1b2c3d4-5678-90ab-cdef-1234567890ab" \
+curl -X GET "https://api-acme.f7i.ai/predict/asset-models/a1b2c3d4-5678-90ab-cdef-1234567890ab" \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json"
 ```
@@ -158,7 +160,7 @@ curl -X GET "https://api.acme.f7i.ai/prod/asset-models/a1b2c3d4-5678-90ab-cdef-1
 
 Updates metadata for an existing monitored asset.
 
-**Endpoint:** `PUT /asset-models/{id}`
+**Endpoint:** `PUT /predict/asset-models/{id}`
 
 **Authentication:** Required
 
@@ -195,7 +197,7 @@ Updates metadata for an existing monitored asset.
 
 **Example Request:**
 ```bash
-curl -X PUT "https://api.acme.f7i.ai/prod/asset-models/a1b2c3d4-5678-90ab-cdef-1234567890ab" \
+curl -X PUT "https://api-acme.f7i.ai/predict/asset-models/a1b2c3d4-5678-90ab-cdef-1234567890ab" \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
@@ -208,7 +210,7 @@ curl -X PUT "https://api.acme.f7i.ai/prod/asset-models/a1b2c3d4-5678-90ab-cdef-1
 
 Removes an asset from the monitoring registry.
 
-**Endpoint:** `DELETE /asset-models/{id}`
+**Endpoint:** `DELETE /predict/asset-models/{id}`
 
 **Authentication:** Required
 
@@ -227,7 +229,7 @@ Removes an asset from the monitoring registry.
 
 **Example Request:**
 ```bash
-curl -X DELETE "https://api.acme.f7i.ai/prod/asset-models/a1b2c3d4-5678-90ab-cdef-1234567890ab" \
+curl -X DELETE "https://api-acme.f7i.ai/predict/asset-models/a1b2c3d4-5678-90ab-cdef-1234567890ab" \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json"
 ```

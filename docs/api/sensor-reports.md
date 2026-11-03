@@ -4,20 +4,22 @@ sidebar_position: 14
 
 # Sensor Reports API (Insights)
 
+**Service:** `predict` (Predict). All paths on this page start with `/predict`, so the base is `https://api-<your-subdomain>.f7i.ai/predict`.
+
 The Sensor Reports API provides endpoints for retrieving Insights - AI-generated analysis reports that identify anomalies and provide recommendations based on sensor data patterns.
 
 ## Endpoints Overview
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| GET | `/sensor-reports` | List all sensor reports |
-| GET | `/sensor-reports/{id}` | Get a specific sensor report |
+| GET | `/predict/sensor-reports` | List all sensor reports |
+| GET | `/predict/sensor-reports/{id}` | Get a specific sensor report |
 
 ## List Sensor Reports
 
 Retrieves a list of sensor reports (insights) with optional filtering.
 
-**Endpoint:** `GET /sensor-reports`
+**Endpoint:** `GET /predict/sensor-reports`
 
 **Authentication:** Required
 
@@ -53,7 +55,7 @@ Retrieves a list of sensor reports (insights) with optional filtering.
 
 **Example Request:**
 ```bash
-curl -X GET "https://api.acme.f7i.ai/prod/sensor-reports?sensorID=450fee8c3b5d&limit=50" \
+curl -X GET "https://api-acme.f7i.ai/predict/sensor-reports?sensorID=450fee8c3b5d&limit=50" \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json"
 ```
@@ -99,7 +101,7 @@ The `report` field contains a JSON string with the AI-generated analysis:
 
 Retrieves a specific sensor report by ID.
 
-**Endpoint:** `GET /sensor-reports/{id}`
+**Endpoint:** `GET /predict/sensor-reports/{id}`
 
 **Authentication:** Required
 
@@ -127,7 +129,7 @@ Retrieves a specific sensor report by ID.
 
 **Example Request:**
 ```bash
-curl -X GET "https://api.acme.f7i.ai/prod/sensor-reports/c91f8bd2-8c86-4aec-a260-ced23053cdb6" \
+curl -X GET "https://api-acme.f7i.ai/predict/sensor-reports/c91f8bd2-8c86-4aec-a260-ced23053cdb6" \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json"
 ```

@@ -4,23 +4,25 @@ sidebar_position: 10
 
 # Part Orders API
 
+**Service:** `rcm` (Prevent). All paths on this page start with `/rcm`, so the base is `https://api-<your-subdomain>.f7i.ai/rcm`.
+
 The Part Orders API provides endpoints for managing parts procurement, tracking order status, and handling purchase orders.
 
 ## Endpoints Overview
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| GET | `/part-orders` | List all part orders |
-| POST | `/part-orders` | Create a new part order |
-| GET | `/part-orders/{orderId}` | Get a specific part order |
-| PUT | `/part-orders/{orderId}` | Update a part order |
-| PUT | `/part-orders/{orderId}/status` | Update order status |
+| GET | `/rcm/part-orders` | List all part orders |
+| POST | `/rcm/part-orders` | Create a new part order |
+| GET | `/rcm/part-orders/{orderId}` | Get a specific part order |
+| PUT | `/rcm/part-orders/{orderId}` | Update a part order |
+| PUT | `/rcm/part-orders/{orderId}/status` | Update order status |
 
 ## List Part Orders
 
 Retrieves a list of all part orders.
 
-**Endpoint:** `GET /part-orders`
+**Endpoint:** `GET /rcm/part-orders`
 
 **Authentication:** Required
 
@@ -95,7 +97,7 @@ Retrieves a list of all part orders.
 
 **Example Request:**
 ```bash
-curl -X GET "https://api.acme.f7i.ai/prod/part-orders?status=pending" \
+curl -X GET "https://api-acme.f7i.ai/rcm/part-orders?status=pending" \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json"
 ```
@@ -104,7 +106,7 @@ curl -X GET "https://api.acme.f7i.ai/prod/part-orders?status=pending" \
 
 Creates a new part order.
 
-**Endpoint:** `POST /part-orders`
+**Endpoint:** `POST /rcm/part-orders`
 
 **Authentication:** Required
 
@@ -206,7 +208,7 @@ Creates a new part order.
 
 Retrieves details of a specific part order.
 
-**Endpoint:** `GET /part-orders/{orderId}`
+**Endpoint:** `GET /rcm/part-orders/{orderId}`
 
 **Authentication:** Required
 
@@ -320,7 +322,7 @@ Retrieves details of a specific part order.
 
 Updates an existing part order.
 
-**Endpoint:** `PUT /part-orders/{orderId}`
+**Endpoint:** `PUT /rcm/part-orders/{orderId}`
 
 **Authentication:** Required
 
@@ -378,7 +380,7 @@ Updates an existing part order.
 
 Updates the status of a part order.
 
-**Endpoint:** `PUT /part-orders/{orderId}/status`
+**Endpoint:** `PUT /rcm/part-orders/{orderId}/status`
 
 **Authentication:** Required
 

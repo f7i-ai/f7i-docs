@@ -4,20 +4,22 @@ sidebar_position: 22
 
 # Gateways API
 
+**Service:** `predict` (Predict). All paths on this page start with `/predict`, so the base is `https://api-<your-subdomain>.f7i.ai/predict`.
+
 The Gateways API provides endpoints for retrieving information about IoT gateways that collect and transmit sensor data from monitored assets. Gateways serve as the communication bridge between sensors and the cloud platform.
 
 ## Endpoints Overview
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| GET | `/gateways` | List all gateways |
-| GET | `/gateways/{id}` | Get a specific gateway |
+| GET | `/predict/gateways` | List all gateways |
+| GET | `/predict/gateways/{id}` | Get a specific gateway |
 
 ## List Gateways
 
 Retrieves a list of gateways with optional filtering.
 
-**Endpoint:** `GET /gateways`
+**Endpoint:** `GET /predict/gateways`
 
 **Authentication:** Required
 
@@ -61,7 +63,7 @@ Retrieves a list of gateways with optional filtering.
 
 **Example Request:**
 ```bash
-curl -X GET "https://api.acme.f7i.ai/prod/gateways?companyName=Acme%20Corp&siteName=Main%20Plant" \
+curl -X GET "https://api-acme.f7i.ai/predict/gateways?companyName=Acme%20Corp&siteName=Main%20Plant" \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json"
 ```
@@ -70,7 +72,7 @@ curl -X GET "https://api.acme.f7i.ai/prod/gateways?companyName=Acme%20Corp&siteN
 
 Retrieves a specific gateway by ID.
 
-**Endpoint:** `GET /gateways/{id}`
+**Endpoint:** `GET /predict/gateways/{id}`
 
 **Authentication:** Required
 
@@ -122,7 +124,7 @@ Retrieves a specific gateway by ID.
 
 **Example Request:**
 ```bash
-curl -X GET "https://api.acme.f7i.ai/prod/gateways/gw-123" \
+curl -X GET "https://api-acme.f7i.ai/predict/gateways/gw-123" \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json"
 ```

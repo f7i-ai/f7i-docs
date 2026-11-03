@@ -4,43 +4,45 @@ sidebar_position: 3
 
 # Components API
 
+**Service:** `rcm` (Prevent). All paths on this page start with `/rcm`, so the base is `https://api-<your-subdomain>.f7i.ai/rcm`.
+
 The Components API provides endpoints for managing asset components, templates, and hierarchical structures within your maintenance system.
 
 ## Endpoints Overview
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| GET | `/components` | List all components |
-| POST | `/components` | Create a new component |
-| GET | `/components/{componentId}` | Get a specific component |
-| PUT | `/components/{componentId}` | Update a component |
-| DELETE | `/components/{componentId}` | Delete a component |
-| POST | `/components/bulk` | Bulk operations on components |
-| GET | `/components/tree/{rootId}` | Get component tree |
-| GET | `/components/{componentId}/children` | Get direct children |
-| POST | `/components/{componentId}/children` | Add child component |
-| GET | `/components/{componentId}/descendants` | Get all descendants |
-| GET | `/components/{componentId}/ancestors` | Get all ancestors |
-| PUT | `/components/{componentId}/move` | Move component in hierarchy |
+| GET | `/rcm/components` | List all components |
+| POST | `/rcm/components` | Create a new component |
+| GET | `/rcm/components/{componentId}` | Get a specific component |
+| PUT | `/rcm/components/{componentId}` | Update a component |
+| DELETE | `/rcm/components/{componentId}` | Delete a component |
+| POST | `/rcm/components/bulk` | Bulk operations on components |
+| GET | `/rcm/components/tree/{rootId}` | Get component tree |
+| GET | `/rcm/components/{componentId}/children` | Get direct children |
+| POST | `/rcm/components/{componentId}/children` | Add child component |
+| GET | `/rcm/components/{componentId}/descendants` | Get all descendants |
+| GET | `/rcm/components/{componentId}/ancestors` | Get all ancestors |
+| PUT | `/rcm/components/{componentId}/move` | Move component in hierarchy |
 
 ## Template Endpoints
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| GET | `/components/templates` | List component templates |
-| POST | `/components/templates` | Create a template |
-| GET | `/components/templates/{templateId}` | Get specific template |
-| PUT | `/components/templates/{templateId}` | Update template |
-| DELETE | `/components/templates/{templateId}` | Delete template |
-| GET | `/components/templates/{templateId}/versions` | Get template versions |
-| POST | `/components/templates/{templateId}/usage` | Track template usage |
-| POST | `/components/templates/{templateId}/apply-hierarchical` | Apply template hierarchically |
+| GET | `/rcm/components/templates` | List component templates |
+| POST | `/rcm/components/templates` | Create a template |
+| GET | `/rcm/components/templates/{templateId}` | Get specific template |
+| PUT | `/rcm/components/templates/{templateId}` | Update template |
+| DELETE | `/rcm/components/templates/{templateId}` | Delete template |
+| GET | `/rcm/components/templates/{templateId}/versions` | Get template versions |
+| POST | `/rcm/components/templates/{templateId}/usage` | Track template usage |
+| POST | `/rcm/components/templates/{templateId}/apply-hierarchical` | Apply template hierarchically |
 
 ## List Components
 
 Retrieves a list of all components.
 
-**Endpoint:** `GET /components`
+**Endpoint:** `GET /rcm/components`
 
 **Authentication:** Required
 
@@ -85,7 +87,7 @@ Retrieves a list of all components.
 
 Creates a new component.
 
-**Endpoint:** `POST /components`
+**Endpoint:** `POST /rcm/components`
 
 **Authentication:** Required
 
@@ -140,7 +142,7 @@ Creates a new component.
 
 Retrieves details of a specific component.
 
-**Endpoint:** `GET /components/{componentId}`
+**Endpoint:** `GET /rcm/components/{componentId}`
 
 **Authentication:** Required
 
@@ -179,7 +181,7 @@ Retrieves details of a specific component.
 
 Updates an existing component.
 
-**Endpoint:** `PUT /components/{componentId}`
+**Endpoint:** `PUT /rcm/components/{componentId}`
 
 **Authentication:** Required
 
@@ -200,7 +202,7 @@ Updates an existing component.
 
 Deletes a component from the system.
 
-**Endpoint:** `DELETE /components/{componentId}`
+**Endpoint:** `DELETE /rcm/components/{componentId}`
 
 **Authentication:** Required
 
@@ -219,7 +221,7 @@ Deletes a component from the system.
 
 Performs bulk operations on multiple components.
 
-**Endpoint:** `POST /components/bulk`
+**Endpoint:** `POST /rcm/components/bulk`
 
 **Authentication:** Required
 
@@ -261,7 +263,7 @@ Performs bulk operations on multiple components.
 
 Gets a hierarchical tree view of components starting from a root component.
 
-**Endpoint:** `GET /components/tree/{rootId}`
+**Endpoint:** `GET /rcm/components/tree/{rootId}`
 
 **Authentication:** Required
 
@@ -299,7 +301,7 @@ Gets a hierarchical tree view of components starting from a root component.
 
 Gets the direct children of a component.
 
-**Endpoint:** `GET /components/{componentId}/children`
+**Endpoint:** `GET /rcm/components/{componentId}/children`
 
 **Authentication:** Required
 
@@ -326,7 +328,7 @@ Gets the direct children of a component.
 
 Adds a child component to a parent component.
 
-**Endpoint:** `POST /components/{componentId}/children`
+**Endpoint:** `POST /rcm/components/{componentId}/children`
 
 **Authentication:** Required
 
@@ -348,7 +350,7 @@ Adds a child component to a parent component.
 
 Gets all descendant components (children, grandchildren, etc.).
 
-**Endpoint:** `GET /components/{componentId}/descendants`
+**Endpoint:** `GET /rcm/components/{componentId}/descendants`
 
 **Authentication:** Required
 
@@ -381,7 +383,7 @@ Gets all descendant components (children, grandchildren, etc.).
 
 Gets all ancestor components (parent, grandparent, etc.).
 
-**Endpoint:** `GET /components/{componentId}/ancestors`
+**Endpoint:** `GET /rcm/components/{componentId}/ancestors`
 
 **Authentication:** Required
 
@@ -412,7 +414,7 @@ Gets all ancestor components (parent, grandparent, etc.).
 
 Moves a component to a different parent in the hierarchy.
 
-**Endpoint:** `PUT /components/{componentId}/move`
+**Endpoint:** `PUT /rcm/components/{componentId}/move`
 
 **Authentication:** Required
 
@@ -431,7 +433,7 @@ Moves a component to a different parent in the hierarchy.
 
 ### List Templates
 
-**Endpoint:** `GET /components/templates`
+**Endpoint:** `GET /rcm/components/templates`
 
 **Response:**
 ```json
@@ -459,7 +461,7 @@ Moves a component to a different parent in the hierarchy.
 
 ### Create Template
 
-**Endpoint:** `POST /components/templates`
+**Endpoint:** `POST /rcm/components/templates`
 
 **Request Body:**
 ```json
@@ -494,7 +496,7 @@ Moves a component to a different parent in the hierarchy.
 
 Applies a template to create a hierarchical component structure.
 
-**Endpoint:** `POST /components/templates/{templateId}/apply-hierarchical`
+**Endpoint:** `POST /rcm/components/templates/{templateId}/apply-hierarchical`
 
 **Path Parameters:**
 - `templateId`: Template ID to apply

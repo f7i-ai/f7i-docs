@@ -4,33 +4,35 @@ sidebar_position: 2
 
 # Assets API
 
+**Service:** `rcm` (Prevent). All paths on this page start with `/rcm`, so the base is `https://api-<your-subdomain>.f7i.ai/rcm`.
+
 The Assets API provides endpoints for managing physical assets and equipment in your maintenance system.
 
 ## Endpoints Overview
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| GET | `/assets` | List all assets |
-| POST | `/assets` | Create a new asset |
-| GET | `/assets/{assetId}` | Get a specific asset |
-| PUT | `/assets/{assetId}` | Update an asset |
-| DELETE | `/assets/{assetId}` | Delete an asset |
-| POST | `/assets/import` | Import assets from CSV |
+| GET | `/rcm/assets` | List all assets |
+| POST | `/rcm/assets` | Create a new asset |
+| GET | `/rcm/assets/{assetId}` | Get a specific asset |
+| PUT | `/rcm/assets/{assetId}` | Update an asset |
+| DELETE | `/rcm/assets/{assetId}` | Delete an asset |
+| POST | `/rcm/assets/import` | Import assets from CSV |
 
 ## Photo Management Endpoints
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| GET | `/assets/{assetId}/photos` | List asset photos |
-| POST | `/assets/{assetId}/photos/presigned-url` | Get presigned upload URL |
-| POST | `/assets/{assetId}/photos` | Add photo metadata |
-| DELETE | `/assets/{assetId}/photos/{mediaId}` | Delete asset photo |
+| GET | `/rcm/assets/{assetId}/photos` | List asset photos |
+| POST | `/rcm/assets/{assetId}/photos/presigned-upload-url` | Get presigned upload URL |
+| POST | `/rcm/assets/{assetId}/photos` | Add photo metadata |
+| DELETE | `/rcm/assets/{assetId}/photos/{mediaId}` | Delete asset photo |
 
 ## List Assets
 
 Retrieves a list of all assets.
 
-**Endpoint:** `GET /assets`
+**Endpoint:** `GET /rcm/assets`
 
 **Authentication:** Required
 
@@ -83,7 +85,7 @@ Retrieves a list of all assets.
 
 **Example Request:**
 ```bash
-curl -X GET "https://api.acme.f7i.ai/prod/assets?limit=20&type=pump" \
+curl -X GET "https://api-acme.f7i.ai/rcm/assets?limit=20&type=pump" \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json"
 ```
@@ -92,7 +94,7 @@ curl -X GET "https://api.acme.f7i.ai/prod/assets?limit=20&type=pump" \
 
 Creates a new asset.
 
-**Endpoint:** `POST /assets`
+**Endpoint:** `POST /rcm/assets`
 
 **Authentication:** Required
 
@@ -140,7 +142,7 @@ Creates a new asset.
 
 **Example Request:**
 ```bash
-curl -X POST "https://api.acme.f7i.ai/prod/assets" \
+curl -X POST "https://api-acme.f7i.ai/rcm/assets" \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
@@ -156,7 +158,7 @@ curl -X POST "https://api.acme.f7i.ai/prod/assets" \
 
 Retrieves details of a specific asset.
 
-**Endpoint:** `GET /assets/{assetId}`
+**Endpoint:** `GET /rcm/assets/{assetId}`
 
 **Authentication:** Required
 
@@ -193,7 +195,7 @@ Retrieves details of a specific asset.
 
 **Example Request:**
 ```bash
-curl -X GET "https://api.acme.f7i.ai/prod/assets/asset-123" \
+curl -X GET "https://api-acme.f7i.ai/rcm/assets/asset-123" \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json"
 ```
@@ -202,7 +204,7 @@ curl -X GET "https://api.acme.f7i.ai/prod/assets/asset-123" \
 
 Updates an existing asset.
 
-**Endpoint:** `PUT /assets/{assetId}`
+**Endpoint:** `PUT /rcm/assets/{assetId}`
 
 **Authentication:** Required
 
@@ -242,7 +244,7 @@ Updates an existing asset.
 
 **Example Request:**
 ```bash
-curl -X PUT "https://api.acme.f7i.ai/prod/assets/asset-123" \
+curl -X PUT "https://api-acme.f7i.ai/rcm/assets/asset-123" \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
@@ -255,7 +257,7 @@ curl -X PUT "https://api.acme.f7i.ai/prod/assets/asset-123" \
 
 Deletes an asset from the system.
 
-**Endpoint:** `DELETE /assets/{assetId}`
+**Endpoint:** `DELETE /rcm/assets/{assetId}`
 
 **Authentication:** Required
 
@@ -272,7 +274,7 @@ Deletes an asset from the system.
 
 **Example Request:**
 ```bash
-curl -X DELETE "https://api.acme.f7i.ai/prod/assets/asset-123" \
+curl -X DELETE "https://api-acme.f7i.ai/rcm/assets/asset-123" \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json"
 ```
@@ -281,7 +283,7 @@ curl -X DELETE "https://api.acme.f7i.ai/prod/assets/asset-123" \
 
 Imports multiple assets from a CSV file.
 
-**Endpoint:** `POST /assets/import`
+**Endpoint:** `POST /rcm/assets/import`
 
 **Authentication:** Required
 
@@ -317,7 +319,7 @@ Motor B2,Electric Motor,Building 2,M002-2024,PowerCorp,EM-750,2024-02-01
 
 **Example Request:**
 ```bash
-curl -X POST "https://api.acme.f7i.ai/prod/assets/import" \
+curl -X POST "https://api-acme.f7i.ai/rcm/assets/import" \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: text/csv" \
   --data-binary @assets.csv
@@ -368,7 +370,7 @@ Assets can have the following status values:
 
 Retrieves a list of all photos associated with a specific asset.
 
-**Endpoint:** `GET /assets/{assetId}/photos`
+**Endpoint:** `GET /rcm/assets/{assetId}/photos`
 
 **Authentication:** Required
 
@@ -407,7 +409,7 @@ Retrieves a list of all photos associated with a specific asset.
 
 **Example Request:**
 ```bash
-curl -X GET "https://api.acme.f7i.ai/prod/assets/asset-123/photos" \
+curl -X GET "https://api-acme.f7i.ai/rcm/assets/asset-123/photos" \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json"
 ```
@@ -416,7 +418,7 @@ curl -X GET "https://api.acme.f7i.ai/prod/assets/asset-123/photos" \
 
 Generates a presigned URL for uploading a photo directly.
 
-**Endpoint:** `POST /assets/{assetId}/photos/presigned-url`
+**Endpoint:** `POST /rcm/assets/{assetId}/photos/presigned-upload-url`
 
 **Authentication:** Required
 
@@ -449,7 +451,7 @@ Generates a presigned URL for uploading a photo directly.
 
 **Example Request:**
 ```bash
-curl -X POST "https://api.acme.f7i.ai/prod/assets/asset-123/photos/presigned-url" \
+curl -X POST "https://api-acme.f7i.ai/rcm/assets/asset-123/photos/presigned-upload-url" \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
@@ -463,7 +465,7 @@ curl -X POST "https://api.acme.f7i.ai/prod/assets/asset-123/photos/presigned-url
 
 Adds photo metadata after successful upload.
 
-**Endpoint:** `POST /assets/{assetId}/photos`
+**Endpoint:** `POST /rcm/assets/{assetId}/photos`
 
 **Authentication:** Required
 
@@ -498,7 +500,7 @@ Adds photo metadata after successful upload.
 
 **Example Request:**
 ```bash
-curl -X POST "https://api.acme.f7i.ai/prod/assets/asset-123/photos" \
+curl -X POST "https://api-acme.f7i.ai/rcm/assets/asset-123/photos" \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
@@ -514,7 +516,7 @@ curl -X POST "https://api.acme.f7i.ai/prod/assets/asset-123/photos" \
 
 Removes a photo from an asset and deletes it.
 
-**Endpoint:** `DELETE /assets/{assetId}/photos/{mediaId}`
+**Endpoint:** `DELETE /rcm/assets/{assetId}/photos/{mediaId}`
 
 **Authentication:** Required
 
@@ -532,7 +534,7 @@ Removes a photo from an asset and deletes it.
 
 **Example Request:**
 ```bash
-curl -X DELETE "https://api.acme.f7i.ai/prod/assets/asset-123/photos/photo-003" \
+curl -X DELETE "https://api-acme.f7i.ai/rcm/assets/asset-123/photos/photo-003" \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json"
 ```

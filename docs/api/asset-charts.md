@@ -4,20 +4,22 @@ sidebar_position: 16
 
 # Sensor Data API
 
+**Service:** `predict` (Predict). All paths on this page start with `/predict`, so the base is `https://api-<your-subdomain>.f7i.ai/predict`.
+
 The Sensor Data API provides endpoints for retrieving time-series sensor readings from monitored assets. This is the primary endpoint for accessing vibration, temperature, and acceleration data for charting and analysis.
 
 ## Endpoints Overview
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| GET | `/asset-charts` | List sensor readings |
-| GET | `/asset-charts/{id}` | Get specific reading |
+| GET | `/predict/asset-charts` | List sensor readings |
+| GET | `/predict/asset-charts/{id}` | Get specific reading |
 
 ## List Sensor Readings
 
 Retrieves sensor readings with optional filtering. Best used with time range queries for efficient data retrieval.
 
-**Endpoint:** `GET /asset-charts`
+**Endpoint:** `GET /predict/asset-charts`
 
 **Authentication:** Required
 
@@ -64,14 +66,14 @@ Retrieves sensor readings with optional filtering. Best used with time range que
 
 **Example Request - Time Range Query (Recommended):**
 ```bash
-curl -X GET "https://api.acme.f7i.ai/prod/asset-charts?sensorId=945ade0a75dd&limit=100&sortDirection=DESC&timestampStart=2025-10-01T00:00:00.000Z&timestampEnd=2025-12-02T23:59:59.999Z" \
+curl -X GET "https://api-acme.f7i.ai/predict/asset-charts?sensorId=945ade0a75dd&limit=100&sortDirection=DESC&timestampStart=2025-10-01T00:00:00.000Z&timestampEnd=2025-12-02T23:59:59.999Z" \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json"
 ```
 
 **Example Request - Filter by Asset:**
 ```bash
-curl -X GET "https://api.acme.f7i.ai/prod/asset-charts?assetName=Bulk%20Hot%20Water%20Pump&sortDirection=DESC&limit=100" \
+curl -X GET "https://api-acme.f7i.ai/predict/asset-charts?assetName=Bulk%20Hot%20Water%20Pump&sortDirection=DESC&limit=100" \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json"
 ```
@@ -184,7 +186,7 @@ The `acceleration` field contains acceleration measurements across frequency ban
 
 Retrieves a specific sensor reading by ID.
 
-**Endpoint:** `GET /asset-charts/{id}`
+**Endpoint:** `GET /predict/asset-charts/{id}`
 
 **Authentication:** Required
 
@@ -195,7 +197,7 @@ Retrieves a specific sensor reading by ID.
 
 **Example Request:**
 ```bash
-curl -X GET "https://api.acme.f7i.ai/prod/asset-charts/678813f1-198d-4b12-aad3-cd636f9b1127" \
+curl -X GET "https://api-acme.f7i.ai/predict/asset-charts/678813f1-198d-4b12-aad3-cd636f9b1127" \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json"
 ```
@@ -210,7 +212,7 @@ When retrieving large datasets, use pagination to efficiently fetch results:
 
 **Example Paginated Request:**
 ```bash
-curl -X GET "https://api.acme.f7i.ai/prod/asset-charts?sensorId=945ade0a75dd&limit=1000&sortDirection=DESC&timestampStart=2025-10-01T00:00:00Z&timestampEnd=2025-12-02T23:59:59Z&nextToken=eyJpZCI6ImNoYXJ0LTEyMyJ9" \
+curl -X GET "https://api-acme.f7i.ai/predict/asset-charts?sensorId=945ade0a75dd&limit=1000&sortDirection=DESC&timestampStart=2025-10-01T00:00:00Z&timestampEnd=2025-12-02T23:59:59Z&nextToken=eyJpZCI6ImNoYXJ0LTEyMyJ9" \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json"
 ```

@@ -8,14 +8,29 @@ The Factory AI API provides comprehensive REST interfaces for both the **Prevent
 
 ## Base URL
 
-All API requests are made to your tenant's API endpoint:
+All API requests are made to your tenant's API address, followed by the service name and the path:
 ```
-https://api.<your-subdomain>.f7i.ai/prod
+https://api-<your-subdomain>.f7i.ai/<service>/<path>
 ```
 
+Use the service that matches what you need:
+
+| Service | Path | Used for |
+|---------|------|----------|
+| `rcm` | `/rcm` | Prevent: assets, work orders, parts, inventory and the other [Prevent resources](#prevent-resources) |
+| `predict` | `/predict` | Predict: sensor data, reports, alerts and the other [Predict resources](#predict-resources) |
+| `po` | `/po` | Purchase orders, vendors, receipts and returns |
+| `notifications` | `/notifications` | Notification preferences |
+| `chat` | `/chat` | AI chat and knowledge base documents |
+| `agent` | `/agent` | Live agent connection over WebSocket |
+
+The resource pages in these docs cover `rcm` and `predict`.
+
 For example:
-- `https://api.acme.f7i.ai/prod` - Dedicated tenant
-- `https://api.app.f7i.ai/prod` - Standard tenant
+- `https://api-acme.f7i.ai/rcm/assets` - Dedicated tenant
+- `https://api-app.f7i.ai/predict/metrics` - Standard tenant
+
+The paths on each page already include the service name.
 
 ## Authentication
 
@@ -82,7 +97,7 @@ API requests are subject to rate limiting. If you exceed the rate limit, you'll 
 
 ## Prevent Resources
 
-The Prevent API provides endpoints for managing maintenance operations:
+Prevent endpoints use the `rcm` service. They cover maintenance operations:
 
 - **[Assets](./assets.md)**: Physical assets and equipment
 - **[Components](./components.md)**: Asset components and hierarchical structures
@@ -95,11 +110,10 @@ The Prevent API provides endpoints for managing maintenance operations:
 - **[Part Orders](./part-orders.md)**: Parts ordering and procurement
 - **[Documents](./documents.md)**: Document management and storage
 - **[Customer Settings](./customer-settings.md)**: Customer configuration settings
-- **[Schedules](./schedules.md)**: Maintenance scheduling
 
 ## Predict Resources
 
-The Predict API provides endpoints for predictive analytics and sensor monitoring:
+Predict endpoints use the `predict` service. They cover predictive analytics and sensor monitoring:
 
 - **[Sensor Reports (Insights)](./sensor-reports.md)**: AI-generated anomaly analysis reports
 - **[Monitored Assets](./asset-models.md)**: Registry of assets being monitored by sensors
@@ -123,14 +137,14 @@ The Predict API provides endpoints for predictive analytics and sensor monitorin
 
 ### Basic Request
 ```bash
-curl -X GET "https://api.acme.f7i.ai/prod/assets" \
+curl -X GET "https://api-acme.f7i.ai/rcm/assets" \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json"
 ```
 
 ### Creating a Resource
 ```bash
-curl -X POST "https://api.acme.f7i.ai/prod/assets" \
+curl -X POST "https://api-acme.f7i.ai/rcm/assets" \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{

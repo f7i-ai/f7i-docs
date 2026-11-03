@@ -4,23 +4,25 @@ sidebar_position: 21
 
 # External Events API
 
+**Service:** `predict` (Predict). All paths on this page start with `/predict`, so the base is `https://api-<your-subdomain>.f7i.ai/predict`.
+
 The External Events API provides endpoints for managing events from external sources that may impact asset performance or maintenance scheduling. This includes environmental events, operational changes, and third-party system integrations.
 
 ## Endpoints Overview
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| GET | `/external-events` | List all external events |
-| POST | `/external-events` | Create a new external event |
-| GET | `/external-events/{id}` | Get a specific external event |
-| PUT | `/external-events/{id}` | Update an external event |
-| DELETE | `/external-events/{id}` | Delete an external event |
+| GET | `/predict/external-events` | List all external events |
+| POST | `/predict/external-events` | Create a new external event |
+| GET | `/predict/external-events/{id}` | Get a specific external event |
+| PUT | `/predict/external-events/{id}` | Update an external event |
+| DELETE | `/predict/external-events/{id}` | Delete an external event |
 
 ## List External Events
 
 Retrieves external events with optional filtering.
 
-**Endpoint:** `GET /external-events`
+**Endpoint:** `GET /predict/external-events`
 
 **Authentication:** Required
 
@@ -68,7 +70,7 @@ Retrieves external events with optional filtering.
 
 **Example Request:**
 ```bash
-curl -X GET "https://api.acme.f7i.ai/prod/external-events?siteName=Main%20Plant&areaName=Production%20Floor" \
+curl -X GET "https://api-acme.f7i.ai/predict/external-events?siteName=Main%20Plant&areaName=Production%20Floor" \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json"
 ```
@@ -77,7 +79,7 @@ curl -X GET "https://api.acme.f7i.ai/prod/external-events?siteName=Main%20Plant&
 
 Creates a new external event.
 
-**Endpoint:** `POST /external-events`
+**Endpoint:** `POST /predict/external-events`
 
 **Authentication:** Required
 
@@ -130,7 +132,7 @@ Creates a new external event.
 
 **Example Request:**
 ```bash
-curl -X POST "https://api.acme.f7i.ai/prod/external-events" \
+curl -X POST "https://api-acme.f7i.ai/predict/external-events" \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
@@ -146,7 +148,7 @@ curl -X POST "https://api.acme.f7i.ai/prod/external-events" \
 
 Retrieves a specific external event by ID.
 
-**Endpoint:** `GET /external-events/{id}`
+**Endpoint:** `GET /predict/external-events/{id}`
 
 **Authentication:** Required
 
@@ -182,7 +184,7 @@ Retrieves a specific external event by ID.
 
 **Example Request:**
 ```bash
-curl -X GET "https://api.acme.f7i.ai/prod/external-events/event-123" \
+curl -X GET "https://api-acme.f7i.ai/predict/external-events/event-123" \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json"
 ```
@@ -191,7 +193,7 @@ curl -X GET "https://api.acme.f7i.ai/prod/external-events/event-123" \
 
 Updates an existing external event.
 
-**Endpoint:** `PUT /external-events/{id}`
+**Endpoint:** `PUT /predict/external-events/{id}`
 
 **Authentication:** Required
 
@@ -242,7 +244,7 @@ Updates an existing external event.
 
 **Example Request:**
 ```bash
-curl -X PUT "https://api.acme.f7i.ai/prod/external-events/event-123" \
+curl -X PUT "https://api-acme.f7i.ai/predict/external-events/event-123" \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
@@ -255,7 +257,7 @@ curl -X PUT "https://api.acme.f7i.ai/prod/external-events/event-123" \
 
 Deletes an external event.
 
-**Endpoint:** `DELETE /external-events/{id}`
+**Endpoint:** `DELETE /predict/external-events/{id}`
 
 **Authentication:** Required
 
@@ -274,7 +276,7 @@ Deletes an external event.
 
 **Example Request:**
 ```bash
-curl -X DELETE "https://api.acme.f7i.ai/prod/external-events/event-123" \
+curl -X DELETE "https://api-acme.f7i.ai/predict/external-events/event-123" \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json"
 ```

@@ -4,23 +4,25 @@ sidebar_position: 4
 
 # Failure Codes API
 
+**Service:** `rcm` (Prevent). All paths on this page start with `/rcm`, so the base is `https://api-<your-subdomain>.f7i.ai/rcm`.
+
 The Failure Codes API provides endpoints for managing equipment failure classification and categorization.
 
 ## Endpoints Overview
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| GET | `/failurecodes` | List all failure codes |
-| POST | `/failurecodes` | Create a new failure code |
-| GET | `/failurecodes/{failureCodeId}` | Get a specific failure code |
-| PUT | `/failurecodes/{failureCodeId}` | Update a failure code |
-| DELETE | `/failurecodes/{failureCodeId}` | Delete a failure code |
+| GET | `/rcm/failurecodes` | List all failure codes |
+| POST | `/rcm/failurecodes` | Create a new failure code |
+| GET | `/rcm/failurecodes/{failureCodeId}` | Get a specific failure code |
+| PUT | `/rcm/failurecodes/{failureCodeId}` | Update a failure code |
+| DELETE | `/rcm/failurecodes/{failureCodeId}` | Delete a failure code |
 
 ## List Failure Codes
 
 Retrieves a list of all failure codes.
 
-**Endpoint:** `GET /failurecodes`
+**Endpoint:** `GET /rcm/failurecodes`
 
 **Authentication:** Required
 
@@ -73,7 +75,7 @@ Retrieves a list of all failure codes.
 
 **Example Request:**
 ```bash
-curl -X GET "https://api.acme.f7i.ai/prod/failurecodes?category=Mechanical" \
+curl -X GET "https://api-acme.f7i.ai/rcm/failurecodes?category=Mechanical" \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json"
 ```
@@ -82,7 +84,7 @@ curl -X GET "https://api.acme.f7i.ai/prod/failurecodes?category=Mechanical" \
 
 Creates a new failure code.
 
-**Endpoint:** `POST /failurecodes`
+**Endpoint:** `POST /rcm/failurecodes`
 
 **Authentication:** Required
 
@@ -146,7 +148,7 @@ Creates a new failure code.
 
 Retrieves details of a specific failure code.
 
-**Endpoint:** `GET /failurecodes/{failureCodeId}`
+**Endpoint:** `GET /rcm/failurecodes/{failureCodeId}`
 
 **Authentication:** Required
 
@@ -189,7 +191,7 @@ Retrieves details of a specific failure code.
 
 Updates an existing failure code.
 
-**Endpoint:** `PUT /failurecodes/{failureCodeId}`
+**Endpoint:** `PUT /rcm/failurecodes/{failureCodeId}`
 
 **Authentication:** Required
 
@@ -245,7 +247,7 @@ Updates an existing failure code.
 
 Deletes a failure code from the system (soft delete - marks as inactive).
 
-**Endpoint:** `DELETE /failurecodes/{failureCodeId}`
+**Endpoint:** `DELETE /rcm/failurecodes/{failureCodeId}`
 
 **Authentication:** Required
 

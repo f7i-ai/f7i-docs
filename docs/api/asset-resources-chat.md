@@ -4,20 +4,22 @@ sidebar_position: 23
 
 # Asset Resources Chat API
 
+**Service:** `predict` (Predict). All paths on this page start with `/predict`, so the base is `https://api-<your-subdomain>.f7i.ai/predict`.
+
 The Asset Resources Chat API provides endpoints for retrieving chat resources associated with assets. This includes documentation, knowledge base entries, and contextual information used by AI-powered chat assistants to provide asset-specific support.
 
 ## Endpoints Overview
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| GET | `/asset-resources-chat` | List asset chat resources |
-| GET | `/asset-resources-chat/{id}` | Get a specific chat resource |
+| GET | `/predict/asset-resources-chat` | List asset chat resources |
+| GET | `/predict/asset-resources-chat/{id}` | Get a specific chat resource |
 
 ## List Asset Resources Chat
 
 Retrieves chat resources with optional filtering.
 
-**Endpoint:** `GET /asset-resources-chat`
+**Endpoint:** `GET /predict/asset-resources-chat`
 
 **Authentication:** Required
 
@@ -58,7 +60,7 @@ Retrieves chat resources with optional filtering.
 
 **Example Request:**
 ```bash
-curl -X GET "https://api.acme.f7i.ai/prod/asset-resources-chat?assetName=Pump%20A1" \
+curl -X GET "https://api-acme.f7i.ai/predict/asset-resources-chat?assetName=Pump%20A1" \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json"
 ```
@@ -67,7 +69,7 @@ curl -X GET "https://api.acme.f7i.ai/prod/asset-resources-chat?assetName=Pump%20
 
 Retrieves a specific chat resource by ID.
 
-**Endpoint:** `GET /asset-resources-chat/{id}`
+**Endpoint:** `GET /predict/asset-resources-chat/{id}`
 
 **Authentication:** Required
 
@@ -100,7 +102,7 @@ Retrieves a specific chat resource by ID.
 
 **Example Request:**
 ```bash
-curl -X GET "https://api.acme.f7i.ai/prod/asset-resources-chat/resource-123" \
+curl -X GET "https://api-acme.f7i.ai/predict/asset-resources-chat/resource-123" \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json"
 ```

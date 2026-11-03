@@ -4,25 +4,27 @@ sidebar_position: 9
 
 # Inventory API
 
+**Service:** `rcm` (Prevent). All paths on this page start with `/rcm`, so the base is `https://api-<your-subdomain>.f7i.ai/rcm`.
+
 The Inventory API provides endpoints for managing parts inventory, tracking stock levels, adjustments, and generating inventory reports.
 
 ## Endpoints Overview
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| GET | `/inventory` | List all inventory records |
-| GET | `/inventory/{partId}` | Get inventory for a specific part |
-| PUT | `/inventory/{partId}` | Update inventory for a part |
-| DELETE | `/inventory/{partId}` | Delete inventory record |
-| GET | `/inventory/{partId}/history` | Get inventory history |
-| POST | `/inventory/{partId}/adjustments` | Make inventory adjustment |
-| GET | `/inventory/reports` | Get inventory reports |
+| GET | `/rcm/inventory` | List all inventory records |
+| GET | `/rcm/inventory/{partId}` | Get inventory for a specific part |
+| PUT | `/rcm/inventory/{partId}` | Update inventory for a part |
+| DELETE | `/rcm/inventory/{partId}` | Delete inventory record |
+| GET | `/rcm/inventory/{partId}/history` | Get inventory history |
+| POST | `/rcm/inventory/{partId}/adjustments` | Make inventory adjustment |
+| GET | `/rcm/inventory/reports` | Get inventory reports |
 
 ## List Inventory
 
 Retrieves inventory information for all parts.
 
-**Endpoint:** `GET /inventory`
+**Endpoint:** `GET /rcm/inventory`
 
 **Authentication:** Required
 
@@ -59,7 +61,7 @@ Retrieves inventory information for all parts.
 
 **Example Request:**
 ```bash
-curl -X GET "https://api.acme.f7i.ai/prod/inventory?lowStock=true" \
+curl -X GET "https://api-acme.f7i.ai/rcm/inventory?lowStock=true" \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json"
 ```
@@ -68,7 +70,7 @@ curl -X GET "https://api.acme.f7i.ai/prod/inventory?lowStock=true" \
 
 Retrieves inventory details for a specific part.
 
-**Endpoint:** `GET /inventory/{partId}`
+**Endpoint:** `GET /rcm/inventory/{partId}`
 
 **Authentication:** Required
 
@@ -129,7 +131,7 @@ Retrieves inventory details for a specific part.
 
 Updates inventory information for a specific part.
 
-**Endpoint:** `PUT /inventory/{partId}`
+**Endpoint:** `PUT /rcm/inventory/{partId}`
 
 **Authentication:** Required
 
@@ -175,7 +177,7 @@ Updates inventory information for a specific part.
 
 Removes an inventory record (sets stock to zero).
 
-**Endpoint:** `DELETE /inventory/{partId}`
+**Endpoint:** `DELETE /rcm/inventory/{partId}`
 
 **Authentication:** Required
 
@@ -195,7 +197,7 @@ Removes an inventory record (sets stock to zero).
 
 Retrieves the movement history for a specific part.
 
-**Endpoint:** `GET /inventory/{partId}/history`
+**Endpoint:** `GET /rcm/inventory/{partId}/history`
 
 **Authentication:** Required
 
@@ -260,7 +262,7 @@ Retrieves the movement history for a specific part.
 
 Creates an inventory adjustment entry.
 
-**Endpoint:** `POST /inventory/{partId}/adjustments`
+**Endpoint:** `POST /rcm/inventory/{partId}/adjustments`
 
 **Authentication:** Required
 
@@ -304,7 +306,7 @@ Creates an inventory adjustment entry.
 
 Generates various inventory reports and analytics.
 
-**Endpoint:** `GET /inventory/reports`
+**Endpoint:** `GET /rcm/inventory/reports`
 
 **Authentication:** Required
 
