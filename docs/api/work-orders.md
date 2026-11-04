@@ -331,7 +331,7 @@ Today this call ignores `createdAt` and `completedAt`. To correct the dates befo
 
 ### How do I correct the dates on a work order?
 
-Send `createdAt`, `completedAt` or both, as ISO 8601. Past dates are kept exactly as sent, and `updatedAt` still shows when you made the correction.
+With an API key, send `createdAt`, `completedAt` or both, as ISO 8601. Past dates are kept exactly as sent, and `updatedAt` still shows when you made the correction. A request made with a login token keeps ignoring both dates, which is how the app saves.
 
 | Field | Rule |
 |-------|------|
