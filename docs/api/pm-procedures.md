@@ -115,8 +115,12 @@ curl -X GET "https://api-acme.f7i.ai/rcm/pms?assetId=asset-456" \
 | `duration` | string | Estimated time, for example `"2h"` or `"90m"`. The app reads a bare number as hours. |
 | `requiredSkills` | string[] | At least one skill. |
 | `requiredTools` | string[] | At least one tool. |
-| `steps` | string[] | The steps in order, one string per step. If the procedure uses a job plan, the job plan's steps are used for work orders and these are the fallback. |
+| `steps` | string[] | The steps in order, one string per step. An object with a `description` is converted to that string; anything else is rejected with 400. The app shows each step as a line of text. If the procedure uses a job plan, the job plan's steps are used for work orders and these are the fallback. |
 | `safetyPrecautions` | string[] | At least one precaution. |
+
+:::note Available from the next API release
+`steps` is checked on the way in: a list of strings is stored as is, an object with a `description` becomes that string, and anything else is rejected with 400. Today the value is stored however it arrives, and a step that is not a string shows as blank in the app.
+:::
 
 **Optional fields:**
 

@@ -6,13 +6,22 @@ sidebar_position: 3
 
 **Service:** `rcm` (Prevent). All paths on this page start with `/rcm`, so the base is `https://api-<your-subdomain>.f7i.ai/rcm`.
 
-The Components API provides endpoints for managing asset components, templates, and hierarchical structures within your maintenance system.
+The Components API manages the components of an asset: the pumps, motors, bearings and so on that PM procedures, failure modes and parts hang off. Components can be nested under a parent component, and templates let you stamp out a standard set.
+
+Responses use `componentId` as the id, never `id`.
+
+## How components link to other records
+
+- A component belongs to an **asset** (`assetId`). A nested component also records its parent (`parentComponentId`) and the asset at the top of its tree (`rootAssetId`).
+- **Parts** link to a component through the component's `partIds`. Set `partIds` on the component, or set `componentIds` on the [part](./parts.md); the API writes the link both ways.
+- **Failure modes** link to a component through their own `componentId`. See [Failure Codes](./failure-codes.md).
+- **PM procedures** belong to a component. See [PM Procedures](./pm-procedures.md).
 
 ## Endpoints Overview
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| GET | `/rcm/components` | List all components |
+| GET | `/rcm/components` | List components |
 | POST | `/rcm/components` | Create a new component |
 | GET | `/rcm/components/{componentId}` | Get a specific component |
 | PUT | `/rcm/components/{componentId}` | Update a component |
@@ -24,6 +33,9 @@ The Components API provides endpoints for managing asset components, templates, 
 | GET | `/rcm/components/{componentId}/descendants` | Get all descendants |
 | GET | `/rcm/components/{componentId}/ancestors` | Get all ancestors |
 | PUT | `/rcm/components/{componentId}/move` | Move component in hierarchy |
+| GET | `/rcm/components/{componentId}/parts` | List the parts linked to a component |
+| POST | `/rcm/components/{componentId}/parts` | Link parts to a component (`{"partIds": [...]}`) |
+| DELETE | `/rcm/components/{componentId}/parts/{partId}` | Unlink a part |
 
 ## Template Endpoints
 
@@ -40,21 +52,20 @@ The Components API provides endpoints for managing asset components, templates, 
 
 ## List Components
 
-Retrieves a list of all components.
-
 **Endpoint:** `GET /rcm/components`
 
 **Authentication:** Required
 
 **Query Parameters:**
-- `limit` (optional): Maximum number of components to return
-- `offset` (optional): Number of components to skip for pagination
-- `search` (optional): Search term to filter components
-- `type` (optional): Filter by component type
-- `assetId` (optional): Filter by parent asset
-- `parentId` (optional): Filter by parent component
+- `assetId` (optional): only components on this asset
+- `search` (optional): matches name or description
+- `name` (optional): matches name
+- `limit` (optional): default 50, at most 100
+- `include` (optional): comma-separated extras. `partDetails` adds a `partDetails` list for each linked part; `failureCodes` adds the component's failure modes.
 
-**Response:**
+There is no `offset`, `type` or `parentId` filter. For the children of one component use `GET /rcm/components/{componentId}/children`.
+
+**Response:** a JSON array of components.
 ```json
 [
   {
@@ -62,85 +73,125 @@ Retrieves a list of all components.
     "tenantId": "tenant-123",
     "name": "Motor Bearing",
     "description": "Main motor bearing assembly",
-    "assetId": "asset-456",
-    "parentComponentId": "comp-789",
-    "serialNumber": "BRG-001",
+    "category": "Bearing",
+    "cost": "120",
+    "quantity": 1,
+    "criticality": "High",
+    "status": "active",
     "manufacturer": "SKF",
     "model": "6204",
-    "installDate": "2024-01-15T00:00:00Z",
-    "status": "operational",
-    "criticality": "High",
-    "maintenanceRequirements": "Monthly lubrication",
-    "createdAt": "2024-01-15T10:30:00Z",
-    "updatedAt": "2024-10-01T14:45:00Z",
-    "asset": {
-      "assetId": "asset-456",
-      "name": "Electric Motor B2",
-      "site": "main-facility",
-      "area": "production-floor"
-    }
+    "serialNumber": "BRG-001",
+    "installationDate": "2024-01-15T00:00:00Z",
+    "assetId": "asset-456",
+    "parentComponentId": "comp-789",
+    "rootAssetId": "asset-456",
+    "depth": 1,
+    "childCount": 0,
+    "hasChildren": false,
+    "partIds": ["part-001"],
+    "specifications": {
+      "dimensions": { "length": "", "width": "", "height": "", "weight": "" },
+      "customFields": {}
+    },
+    "createdAt": "2024-01-15T10:30:00",
+    "updatedAt": "2024-10-01T14:45:00"
   }
 ]
 ```
 
 ## Create Component
 
-Creates a new component.
-
 **Endpoint:** `POST /rcm/components`
 
 **Authentication:** Required
+
+`name` is the only required field. `assetId` is checked against your tenant when sent; an unknown id is rejected with 400.
+
+| Field | Type | Notes |
+|-------|------|-------|
+| `name` | string | **Required.** 1 to 255 characters. |
+| `assetId` | string | The asset the component belongs to. |
+| `parentComponentId` | string | Nest under another component. Or use `POST /rcm/components/{componentId}/children`, which fills in `assetId`, `rootAssetId` and `depth` for you. |
+| `description` | string | Up to 1,000 characters. |
+| `category` | string | Up to 100 characters. |
+| `status` | string | `active`, `inactive`, `maintenance` or `decommissioned`. Default `active`. |
+| `criticality` | string | `Low`, `Medium`, `High` or `Critical`. Default `Medium`. |
+| `cost` | string | Sent as a string. |
+| `quantity` | integer | Default 1. |
+| `manufacturer`, `model`, `serialNumber` | string | Up to 255 characters each. |
+| `installationDate` | string | ISO 8601. |
+| `partIds` | string[] | Parts that fit this component. |
+| `specifications` | object | `{"dimensions": {...}, "customFields": {...}}`. Anything else goes in `customFields`. |
+| `componentId` | string | Supply your own id instead of a generated one. |
 
 **Request Body:**
 ```json
 {
   "name": "Motor Bearing",
-  "type": "Bearing",
+  "category": "Bearing",
   "assetId": "asset-456",
-  "parentId": "comp-789",
+  "parentComponentId": "comp-789",
   "serialNumber": "BRG-001",
   "manufacturer": "SKF",
   "model": "6204",
-  "installDate": "2024-01-15T00:00:00Z",
+  "installationDate": "2024-01-15T00:00:00Z",
+  "status": "active",
+  "criticality": "High",
+  "partIds": ["part-001"],
   "specifications": {
-    "bore": "20mm",
-    "outerDiameter": "47mm",
-    "width": "14mm"
-  },
-  "maintenanceInterval": "quarterly",
-  "criticality": "high"
+    "customFields": {
+      "bore": "20mm",
+      "outerDiameter": "47mm",
+      "width": "14mm"
+    }
+  }
 }
 ```
 
-**Response:**
+**Response:** `200 OK` with the stored component. `componentId`, `createdAt` and `updatedAt` are filled in by the API.
 ```json
 {
-  "id": "comp-123",
+  "componentId": "comp-123",
+  "tenantId": "tenant-123",
   "name": "Motor Bearing",
-  "type": "Bearing",
-  "assetId": "asset-456",
-  "parentId": "comp-789",
-  "level": 2,
-  "serialNumber": "BRG-001",
+  "description": "",
+  "category": "Bearing",
+  "cost": "",
+  "quantity": 1,
+  "criticality": "High",
+  "status": "active",
   "manufacturer": "SKF",
   "model": "6204",
-  "installDate": "2024-01-15T00:00:00Z",
-  "status": "operational",
+  "serialNumber": "BRG-001",
+  "installationDate": "2024-01-15T00:00:00Z",
+  "assetId": "asset-456",
+  "parentComponentId": "comp-789",
+  "rootAssetId": null,
+  "depth": 0,
+  "childCount": 0,
+  "hasChildren": false,
+  "partIds": ["part-001"],
+  "partDetails": [],
+  "failureCodes": [],
+  "isTemplate": false,
+  "templateId": null,
+  "templateCategory": "",
   "specifications": {
-    "bore": "20mm",
-    "outerDiameter": "47mm",
-    "width": "14mm"
+    "dimensions": { "length": "", "width": "", "height": "", "weight": "" },
+    "customFields": {
+      "bore": "20mm",
+      "outerDiameter": "47mm",
+      "width": "14mm"
+    }
   },
-  "maintenanceInterval": "quarterly",
-  "criticality": "high",
-  "createdAt": "2024-01-15T10:30:00Z",
-  "updatedAt": "2024-01-15T10:30:00Z"
+  "createdAt": "2024-01-15T10:30:00",
+  "updatedAt": "2024-01-15T10:30:00"
 }
 ```
 
-## Get Component
+**Validation errors** return 400 with `message` set to `Validation failed` and a `details` list naming each bad field (see [Error Responses](#error-responses)).
 
-Retrieves details of a specific component.
+## Get Component
 
 **Endpoint:** `GET /rcm/components/{componentId}`
 
@@ -149,37 +200,31 @@ Retrieves details of a specific component.
 **Path Parameters:**
 - `componentId`: Unique identifier of the component
 
-**Response:**
+**Response:** the component as stored, plus `asset` (the parent asset's record), `partDetails` for each id in `partIds`, and `failureCodes` (the failure modes linked to this component).
 ```json
 {
-  "id": "comp-123",
+  "componentId": "comp-123",
+  "tenantId": "tenant-123",
   "name": "Motor Bearing",
-  "type": "Bearing",
+  "category": "Bearing",
+  "status": "active",
+  "criticality": "High",
   "assetId": "asset-456",
-  "parentId": "comp-789",
-  "level": 2,
-  "serialNumber": "BRG-001",
-  "manufacturer": "SKF",
-  "model": "6204",
-  "installDate": "2024-01-15T00:00:00Z",
-  "status": "operational",
-  "specifications": {
-    "bore": "20mm",
-    "outerDiameter": "47mm",
-    "width": "14mm"
-  },
-  "maintenanceInterval": "quarterly",
-  "criticality": "high",
-  "children": ["comp-124", "comp-125"],
-  "workOrders": ["wo-003", "wo-004"],
-  "createdAt": "2024-01-15T10:30:00Z",
-  "updatedAt": "2024-10-01T14:45:00Z"
+  "parentComponentId": "comp-789",
+  "partIds": ["part-001"],
+  "partDetails": [
+    { "partId": "part-001", "name": "Ball Bearing 6204", "partNumber": "SKF-6204", "unit": "each" }
+  ],
+  "failureCodes": [
+    { "failureCodeId": "9b1e2f3a-4c5d-6e7f-8a9b-0c1d2e3f4a5b", "code": "BRG-01", "failureMode": "Bearing seizes" }
+  ],
+  "asset": { "assetId": "asset-456", "name": "Electric Motor B2", "site": "main-facility" },
+  "createdAt": "2024-01-15T10:30:00",
+  "updatedAt": "2024-10-01T14:45:00"
 }
 ```
 
 ## Update Component
-
-Updates an existing component.
 
 **Endpoint:** `PUT /rcm/components/{componentId}`
 
@@ -188,19 +233,21 @@ Updates an existing component.
 **Path Parameters:**
 - `componentId`: Unique identifier of the component
 
+Send only the fields you want to change. Fields you can change: `name`, `description`, `category`, `cost`, `quantity`, `criticality`, `status`, `manufacturer`, `model`, `serialNumber`, `installationDate`, `specifications`, `partIds`, `parentComponentId`, `assetId`, `rootAssetId`, `depth`, `childCount`, `hasChildren`, `isTemplate`, `templateId`, `templateCategory`. Anything else in the body is ignored.
+
+`status` and `criticality` are matched case-insensitively and stored in their canonical form. On update, `retired` is also accepted as a status.
+
 **Request Body:**
 ```json
 {
   "status": "maintenance",
-  "lastMaintenanceDate": "2024-10-15T00:00:00Z",
-  "nextMaintenanceDate": "2024-12-15T00:00:00Z",
-  "notes": "Bearing replaced during scheduled maintenance"
+  "partIds": ["part-001", "part-002"]
 }
 ```
 
-## Delete Component
+**Response:** `200 OK` with the whole component as now stored.
 
-Deletes a component from the system.
+## Delete Component
 
 **Endpoint:** `DELETE /rcm/components/{componentId}`
 
@@ -209,59 +256,46 @@ Deletes a component from the system.
 **Path Parameters:**
 - `componentId`: Unique identifier of the component
 
+**Query Parameters:**
+- `cascade` (optional): `true` also deletes the component's descendants and their PM procedures and strategies.
+
 **Response:**
 ```json
 {
-  "message": "Component deleted successfully",
-  "deletedAt": "2024-10-15T16:30:00Z"
+  "message": "Component comp-123 deleted successfully"
 }
 ```
 
 ## Bulk Operations
 
-Performs bulk operations on multiple components.
-
 **Endpoint:** `POST /rcm/components/bulk`
 
 **Authentication:** Required
 
+`operation` is `move`, `copy` or `delete`. `move` and `copy` take a `targetParentId`. `includeChildren` (default `false`) applies the operation to each component's subtree too.
+
 **Request Body:**
 ```json
 {
-  "operation": "update",
+  "operation": "move",
   "componentIds": ["comp-123", "comp-124", "comp-125"],
-  "data": {
-    "status": "maintenance",
-    "maintenanceDate": "2024-10-15T00:00:00Z"
-  }
+  "targetParentId": "comp-999",
+  "includeChildren": true
 }
 ```
 
-**Response:**
+**Response:** a JSON array with one result per component.
 ```json
-{
-  "processed": 3,
-  "failed": 0,
-  "results": [
-    {
-      "id": "comp-123",
-      "status": "success"
-    },
-    {
-      "id": "comp-124",
-      "status": "success"
-    },
-    {
-      "id": "comp-125",
-      "status": "success"
-    }
-  ]
-}
+[
+  { "componentId": "comp-123", "status": "success" },
+  { "componentId": "comp-124", "status": "success" },
+  { "componentId": "comp-125", "status": "error", "message": "Component with ID comp-125 not found" }
+]
 ```
 
 ## Component Tree
 
-Gets a hierarchical tree view of components starting from a root component.
+Gets the tree of components under a root component.
 
 **Endpoint:** `GET /rcm/components/tree/{rootId}`
 
@@ -273,22 +307,22 @@ Gets a hierarchical tree view of components starting from a root component.
 **Response:**
 ```json
 {
-  "id": "comp-root",
+  "componentId": "comp-root",
   "name": "Main Motor",
-  "type": "Motor",
-  "level": 0,
+  "category": "Motor",
+  "depth": 0,
   "children": [
     {
-      "id": "comp-123",
+      "componentId": "comp-123",
       "name": "Motor Bearing",
-      "type": "Bearing",
-      "level": 1,
+      "category": "Bearing",
+      "depth": 1,
       "children": [
         {
-          "id": "comp-124",
+          "componentId": "comp-124",
           "name": "Bearing Seal",
-          "type": "Seal",
-          "level": 2,
+          "category": "Seal",
+          "depth": 2,
           "children": []
         }
       ]
@@ -308,25 +342,24 @@ Gets the direct children of a component.
 **Path Parameters:**
 - `componentId`: Parent component ID
 
-**Response:**
+**Response:** a JSON array of components, in the same shape as the list.
 ```json
-{
-  "children": [
-    {
-      "id": "comp-124",
-      "name": "Bearing Seal",
-      "type": "Seal",
-      "parentId": "comp-123",
-      "level": 2,
-      "status": "operational"
-    }
-  ]
-}
+[
+  {
+    "componentId": "comp-124",
+    "name": "Bearing Seal",
+    "category": "Seal",
+    "parentComponentId": "comp-123",
+    "assetId": "asset-456",
+    "depth": 2,
+    "status": "active"
+  }
+]
 ```
 
 ## Add Child Component
 
-Adds a child component to a parent component.
+Adds a child component under a parent. The child inherits the parent's `assetId` and `rootAssetId`, and `depth` is set to the parent's depth plus one.
 
 **Endpoint:** `POST /rcm/components/{componentId}/children`
 
@@ -335,20 +368,22 @@ Adds a child component to a parent component.
 **Path Parameters:**
 - `componentId`: Parent component ID
 
-**Request Body:**
+**Request Body:** the same fields as [Create Component](#create-component).
 ```json
 {
   "name": "New Seal",
-  "type": "Seal",
+  "category": "Seal",
   "serialNumber": "SEAL-002",
   "manufacturer": "Parker",
   "model": "PS-100"
 }
 ```
 
+**Response:** `200 OK` with the stored child component, including its `componentId`.
+
 ## Get Component Descendants
 
-Gets all descendant components (children, grandchildren, etc.).
+Gets every component below this one (children, grandchildren and so on).
 
 **Endpoint:** `GET /rcm/components/{componentId}/descendants`
 
@@ -357,31 +392,17 @@ Gets all descendant components (children, grandchildren, etc.).
 **Path Parameters:**
 - `componentId`: Component ID
 
-**Response:**
+**Response:** a JSON array of components.
 ```json
-{
-  "descendants": [
-    {
-      "id": "comp-124",
-      "name": "Bearing Seal",
-      "type": "Seal",
-      "level": 2,
-      "path": ["comp-123", "comp-124"]
-    },
-    {
-      "id": "comp-125",
-      "name": "Seal Ring",
-      "type": "Ring",
-      "level": 3,
-      "path": ["comp-123", "comp-124", "comp-125"]
-    }
-  ]
-}
+[
+  { "componentId": "comp-124", "name": "Bearing Seal", "parentComponentId": "comp-123", "depth": 2 },
+  { "componentId": "comp-125", "name": "Seal Ring", "parentComponentId": "comp-124", "depth": 3 }
+]
 ```
 
 ## Get Component Ancestors
 
-Gets all ancestor components (parent, grandparent, etc.).
+Gets every component above this one (parent, grandparent and so on).
 
 **Endpoint:** `GET /rcm/components/{componentId}/ancestors`
 
@@ -390,29 +411,17 @@ Gets all ancestor components (parent, grandparent, etc.).
 **Path Parameters:**
 - `componentId`: Component ID
 
-**Response:**
+**Response:** a JSON array of components, nearest parent first.
 ```json
-{
-  "ancestors": [
-    {
-      "id": "comp-root",
-      "name": "Main Motor",
-      "type": "Motor",
-      "level": 0
-    },
-    {
-      "id": "comp-123",
-      "name": "Motor Bearing",
-      "type": "Bearing",
-      "level": 1
-    }
-  ]
-}
+[
+  { "componentId": "comp-123", "name": "Motor Bearing", "depth": 1 },
+  { "componentId": "comp-root", "name": "Main Motor", "depth": 0 }
+]
 ```
 
 ## Move Component
 
-Moves a component to a different parent in the hierarchy.
+Moves a component under a different parent.
 
 **Endpoint:** `PUT /rcm/components/{componentId}/move`
 
@@ -424,8 +433,17 @@ Moves a component to a different parent in the hierarchy.
 **Request Body:**
 ```json
 {
-  "newParentId": "comp-999",
-  "position": 1
+  "newParentId": "comp-999"
+}
+```
+
+Send `"newParentId": null` to move the component to the top level of its asset. A move that would make a component its own ancestor is rejected with 400.
+
+**Response:**
+```json
+{
+  "message": "Component moved successfully",
+  "component": { "componentId": "comp-123", "parentComponentId": "comp-999", "depth": 1 }
 }
 ```
 
@@ -435,119 +453,75 @@ Moves a component to a different parent in the hierarchy.
 
 **Endpoint:** `GET /rcm/components/templates`
 
-**Response:**
-```json
-{
-  "templates": [
-    {
-      "id": "template-123",
-      "name": "Standard Motor Template",
-      "type": "Motor",
-      "version": "1.2",
-      "components": [
-        {
-          "name": "Bearing A",
-          "type": "Bearing",
-          "specifications": {
-            "bore": "20mm"
-          }
-        }
-      ],
-      "createdAt": "2024-01-15T10:30:00Z"
-    }
-  ]
-}
-```
+**Response:** a JSON array of templates, each with a `templateId`, `baseTemplateId`, `version`, `name`, `category`, a root `component` and its `children`.
 
 ### Create Template
 
 **Endpoint:** `POST /rcm/components/templates`
 
+The template's root component takes its `name`, `description`, `category`, `specifications` and `metadata` from the top level of the body. `children` is the tree beneath it; each child can have its own `children`.
+
 **Request Body:**
 ```json
 {
-  "name": "Standard Motor Template",
-  "type": "Motor",
+  "name": "Standard Motor",
   "description": "Template for standard industrial motors",
-  "components": [
-    {
-      "name": "Bearing A",
-      "type": "Bearing",
-      "specifications": {
-        "bore": "20mm",
-        "outerDiameter": "47mm"
-      },
-      "maintenanceInterval": "quarterly"
-    },
-    {
-      "name": "Bearing B",
-      "type": "Bearing",
-      "specifications": {
-        "bore": "25mm",
-        "outerDiameter": "52mm"
-      },
-      "maintenanceInterval": "quarterly"
-    }
+  "category": "Motor",
+  "children": [
+    { "name": "Bearing A", "category": "Bearing", "children": [] },
+    { "name": "Bearing B", "category": "Bearing", "children": [] }
   ]
 }
 ```
 
-### Apply Template Hierarchically
+**Response:** the stored template with its `templateId`, `baseTemplateId` and `version`.
 
-Applies a template to create a hierarchical component structure.
+### Apply Template Hierarchically
 
 **Endpoint:** `POST /rcm/components/templates/{templateId}/apply-hierarchical`
 
-**Path Parameters:**
-- `templateId`: Template ID to apply
-
-**Request Body:**
-```json
-{
-  "assetId": "asset-456",
-  "parentId": "comp-root",
-  "customizations": {
-    "serialNumberPrefix": "MTR-2024-"
-  }
-}
-```
+The route exists on the gateway, but the handler behind it does not yet apply the template. Today the app applies templates itself by creating the components. If you need to stamp a template out through the API, create the components with `POST /rcm/components` and `POST /rcm/components/{componentId}/children`.
 
 ## Component Status Values
 
-Components can have the following status values:
+- `active`: in service (the default)
+- `inactive`: not in service
+- `maintenance`: undergoing maintenance
+- `decommissioned`: no longer in use
 
-- `operational`: Component is functioning normally
-- `maintenance`: Component is undergoing maintenance
-- `faulty`: Component has issues but is still operational
-- `failed`: Component has failed and needs replacement
-- `replaced`: Component has been replaced
-- `decommissioned`: Component is no longer in use
+There is no `operational`, `faulty`, `failed` or `replaced` status. Sending one is rejected with 400.
+
+## Component Criticality Values
+
+- `Low`
+- `Medium` (the default)
+- `High`
+- `Critical`
 
 ## Error Responses
+
+Errors carry a `message` field. Validation errors add `details`.
 
 ### 400 Bad Request
 ```json
 {
-  "error": "Invalid component data",
-  "details": {
-    "name": "Component name is required",
-    "type": "Component type must be specified"
-  }
+  "message": "Validation failed",
+  "details": [
+    { "field": "name", "message": "Field required", "code": "missing" },
+    { "field": "status", "message": "Input should be 'active', 'inactive', 'maintenance' or 'decommissioned'", "code": "enum" }
+  ]
 }
 ```
+
+:::note Available from the next API release
+The `details` list above is new. Today a validation failure on this route can answer with a 502 from the gateway instead of a 400.
+:::
+
+Other 400 messages: `Asset with ID asset-999 not found`, `Invalid status 'operational'; must be one of: active, inactive, maintenance, decommissioned, retired` (on update).
 
 ### 404 Not Found
 ```json
 {
-  "error": "Component not found",
-  "componentId": "comp-123"
-}
-```
-
-### 409 Conflict
-```json
-{
-  "error": "Circular reference detected",
-  "details": "Cannot set component as its own parent"
+  "message": "Component with ID comp-999 not found"
 }
 ```

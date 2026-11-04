@@ -98,18 +98,23 @@ Creates a new asset.
 
 **Authentication:** Required
 
+`name`, `description`, `site` and `type` are required. The fields the API keeps are `name`, `description`, `location`, `category`, `manufacturer`, `model`, `area`, `site`, `serialNumber`, `type`, `installationDate` (`installDate` is accepted as an alias), `criticality` (`low`, `medium`, `high` or `critical`), `status` and `customFields`. Anything else is dropped; put it in `customFields`.
+
 **Request Body:**
 ```json
 {
   "name": "Pump A1",
+  "description": "Main cooling water pump",
+  "site": "main-facility",
+  "area": "production-floor",
   "type": "Centrifugal Pump",
   "location": "Building 1",
   "serialNumber": "P001-2024",
   "manufacturer": "ACME Pumps",
   "model": "CP-500",
-  "installDate": "2024-01-15T00:00:00Z",
-  "description": "Main cooling water pump",
-  "specifications": {
+  "criticality": "high",
+  "installationDate": "2024-01-15T00:00:00Z",
+  "customFields": {
     "power": "5kW",
     "flow": "100 L/min",
     "pressure": "10 bar"
@@ -117,26 +122,32 @@ Creates a new asset.
 }
 ```
 
-**Response:**
+**Response:** `200 OK` with the stored asset. The id is `assetId`, never `id`.
 ```json
 {
-  "id": "asset-123",
+  "assetId": "asset-123",
+  "tenantId": "tenant-123",
   "name": "Pump A1",
-  "type": "Centrifugal Pump",
+  "description": "Main cooling water pump",
   "location": "Building 1",
-  "status": "operational",
-  "serialNumber": "P001-2024",
+  "category": "",
+  "criticality": "high",
+  "status": "active",
   "manufacturer": "ACME Pumps",
   "model": "CP-500",
-  "installDate": "2024-01-15T00:00:00Z",
-  "description": "Main cooling water pump",
-  "specifications": {
+  "area": "production-floor",
+  "site": "main-facility",
+  "serialNumber": "P001-2024",
+  "type": "Centrifugal Pump",
+  "installationDate": "2024-01-15T00:00:00Z",
+  "customFields": {
     "power": "5kW",
     "flow": "100 L/min",
     "pressure": "10 bar"
   },
-  "createdAt": "2024-01-15T10:30:00Z",
-  "updatedAt": "2024-01-15T10:30:00Z"
+  "photoMetadata": [],
+  "createdAt": "2024-01-15T10:30:00",
+  "updatedAt": "2024-01-15T10:30:00"
 }
 ```
 
@@ -147,6 +158,8 @@ curl -X POST "https://api-acme.f7i.ai/rcm/assets" \
   -H "Content-Type: application/json" \
   -d '{
     "name": "Pump A1",
+    "description": "Main cooling water pump",
+    "site": "main-facility",
     "type": "Centrifugal Pump",
     "location": "Building 1",
     "serialNumber": "P001-2024",
@@ -211,34 +224,38 @@ Updates an existing asset.
 **Path Parameters:**
 - `assetId`: Unique identifier of the asset
 
+Send only the fields you want to change. The same fields as [Create Asset](#create-asset) apply; anything else is ignored.
+
 **Request Body:**
 ```json
 {
   "name": "Pump A1 - Updated",
   "status": "maintenance",
-  "lastMaintenanceDate": "2024-10-15T00:00:00Z",
-  "nextMaintenanceDate": "2024-12-15T00:00:00Z",
   "description": "Main cooling water pump - recently serviced"
 }
 ```
 
-**Response:**
+**Response:** `200 OK` with the whole asset as now stored.
 ```json
 {
-  "id": "asset-123",
+  "assetId": "asset-123",
+  "tenantId": "tenant-123",
   "name": "Pump A1 - Updated",
-  "type": "Centrifugal Pump",
+  "description": "Main cooling water pump - recently serviced",
   "location": "Building 1",
+  "category": "",
+  "criticality": "high",
   "status": "maintenance",
-  "serialNumber": "P001-2024",
   "manufacturer": "ACME Pumps",
   "model": "CP-500",
-  "installDate": "2024-01-15T00:00:00Z",
-  "lastMaintenanceDate": "2024-10-15T00:00:00Z",
-  "nextMaintenanceDate": "2024-12-15T00:00:00Z",
-  "description": "Main cooling water pump - recently serviced",
-  "createdAt": "2024-01-15T10:30:00Z",
-  "updatedAt": "2024-10-15T16:20:00Z"
+  "area": "production-floor",
+  "site": "main-facility",
+  "serialNumber": "P001-2024",
+  "type": "Centrifugal Pump",
+  "installationDate": "2024-01-15T00:00:00Z",
+  "customFields": {},
+  "createdAt": "2024-01-15T10:30:00",
+  "updatedAt": "2024-10-15T16:20:00"
 }
 ```
 
@@ -248,8 +265,7 @@ curl -X PUT "https://api-acme.f7i.ai/rcm/assets/asset-123" \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "status": "maintenance",
-    "lastMaintenanceDate": "2024-10-15T00:00:00Z"
+    "status": "maintenance"
   }'
 ```
 
@@ -304,12 +320,12 @@ Motor B2,Electric Motor,Building 2,M002-2024,PowerCorp,EM-750,2024-02-01
   "errors": [],
   "assets": [
     {
-      "id": "asset-124",
+      "assetId": "asset-124",
       "name": "Pump A1",
       "type": "Centrifugal Pump"
     },
     {
-      "id": "asset-125",
+      "assetId": "asset-125",
       "name": "Motor B2",
       "type": "Electric Motor"
     }
@@ -327,48 +343,37 @@ curl -X POST "https://api-acme.f7i.ai/rcm/assets/import" \
 
 ## Asset Status Values
 
-Assets can have the following status values:
+`status` is free text. It is stored lower-cased, and defaults to `active`. The app offers:
 
-- `operational`: Asset is functioning normally
-- `maintenance`: Asset is undergoing maintenance
-- `offline`: Asset is not operational
-- `decommissioned`: Asset is no longer in use
-- `pending`: Asset is awaiting installation or activation
+- `active`: in service
+- `maintenance`: undergoing maintenance
+- `inactive`: not in service
+- `decommissioned`: no longer in use
 
 ## Error Responses
+
+Errors carry a single `message` field.
 
 ### 400 Bad Request
 ```json
 {
-  "error": "Invalid asset data",
-  "details": {
-    "name": "Asset name is required",
-    "type": "Asset type must be specified"
-  }
+  "message": "Missing required fields: site, type"
 }
 ```
+Other 400 messages: `Missing required fields: name, description`, `Invalid criticality 'urgent'; must be one of: low, medium, high, critical`, `status must be a non-empty string`.
 
 ### 404 Not Found
 ```json
 {
-  "error": "Asset not found",
-  "assetId": "asset-123"
-}
-```
-
-### 409 Conflict
-```json
-{
-  "error": "Asset with this serial number already exists",
-  "serialNumber": "P001-2024"
+  "message": "Asset with ID asset-999 not found"
 }
 ```
 
 ## Asset Photos
 
-### List Asset Photos
+Asset photos work the same way as [part photos](./parts.md#part-photos): ask for a presigned URL, upload the file to it, then record the photo.
 
-Retrieves a list of all photos associated with a specific asset.
+### List Asset Photos
 
 **Endpoint:** `GET /rcm/assets/{assetId}/photos`
 
@@ -377,34 +382,28 @@ Retrieves a list of all photos associated with a specific asset.
 **Path Parameters:**
 - `assetId`: Unique identifier of the asset
 
-**Response:**
+**Response:** a JSON array of photo records.
 ```json
-{
-  "photos": [
-    {
-      "id": "photo-001",
-      "filename": "pump_a1_front_view.jpg",
-      "type": "image",
-      "size": 345600,
-      "uploadedBy": "user-001",
-      "uploadedAt": "2024-10-15T09:30:00Z",
-      "thumbnailUrl": "https://s3.amazonaws.com/bucket/thumbs/photo-001.jpg",
-      "url": "https://s3.amazonaws.com/bucket/photos/photo-001.jpg",
-      "description": "Front view of Pump A1 showing control panel"
-    },
-    {
-      "id": "photo-002",
-      "filename": "pump_a1_nameplate.jpg",
-      "type": "image",
-      "size": 287340,
-      "uploadedBy": "user-002",
-      "uploadedAt": "2024-10-15T10:15:00Z",
-      "thumbnailUrl": "https://s3.amazonaws.com/bucket/thumbs/photo-002.jpg",
-      "url": "https://s3.amazonaws.com/bucket/photos/photo-002.jpg",
-      "description": "Asset nameplate with serial and model numbers"
-    }
-  ]
-}
+[
+  {
+    "mediaId": "photo-001",
+    "s3Key": "assets/asset-123/photo-001.jpg",
+    "fileName": "pump_a1_front_view.jpg",
+    "fileType": "image/jpeg",
+    "description": "Front view of Pump A1 showing control panel",
+    "uploadedAt": "2024-10-15T09:30:00Z",
+    "presignedUrl": "https://s3.amazonaws.com/bucket/assets/...?signature=..."
+  },
+  {
+    "mediaId": "photo-002",
+    "s3Key": "assets/asset-123/photo-002.jpg",
+    "fileName": "pump_a1_nameplate.jpg",
+    "fileType": "image/jpeg",
+    "description": "Asset nameplate with serial and model numbers",
+    "uploadedAt": "2024-10-15T10:15:00Z",
+    "presignedUrl": "https://s3.amazonaws.com/bucket/assets/...?signature=..."
+  }
+]
 ```
 
 **Example Request:**
@@ -416,8 +415,6 @@ curl -X GET "https://api-acme.f7i.ai/rcm/assets/asset-123/photos" \
 
 ### Get Presigned Upload URL
 
-Generates a presigned URL for uploading a photo directly.
-
 **Endpoint:** `POST /rcm/assets/{assetId}/photos/presigned-upload-url`
 
 **Authentication:** Required
@@ -428,26 +425,23 @@ Generates a presigned URL for uploading a photo directly.
 **Request Body:**
 ```json
 {
-  "filename": "motor_inspection.jpg",
-  "contentType": "image/jpeg",
-  "size": 2048576
+  "fileName": "motor_inspection.jpg",
+  "fileType": "image/jpeg"
 }
 ```
 
 **Response:**
 ```json
 {
-  "uploadUrl": "https://s3.amazonaws.com/bucket/upload-url?signature=...",
+  "presignedUrl": "https://s3.amazonaws.com/bucket/upload-url?signature=...",
   "mediaId": "photo-003",
-  "fields": {
-    "key": "assets/asset-123/photos/photo-003.jpg",
-    "AWSAccessKeyId": "AKIAI...",
-    "policy": "eyJ...",
-    "signature": "..."
-  },
-  "expiresAt": "2024-10-15T10:00:00Z"
+  "s3Key": "assets/asset-123/photo-003.jpg",
+  "fileName": "motor_inspection.jpg",
+  "fileType": "image/jpeg"
 }
 ```
+
+Upload the file with an HTTP PUT to `presignedUrl`, then record it with the call below.
 
 **Example Request:**
 ```bash
@@ -455,15 +449,14 @@ curl -X POST "https://api-acme.f7i.ai/rcm/assets/asset-123/photos/presigned-uplo
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "filename": "motor_inspection.jpg",
-    "contentType": "image/jpeg",
-    "size": 2048576
+    "fileName": "motor_inspection.jpg",
+    "fileType": "image/jpeg"
   }'
 ```
 
 ### Add Photo Metadata
 
-Adds photo metadata after successful upload.
+Records the photo after the file has been uploaded.
 
 **Endpoint:** `POST /rcm/assets/{assetId}/photos`
 
@@ -475,46 +468,27 @@ Adds photo metadata after successful upload.
 **Request Body:**
 ```json
 {
-  "mediaId": "photo-003",
-  "filename": "motor_inspection.jpg",
-  "type": "image",
-  "size": 2048576,
-  "description": "Annual inspection showing motor condition"
+  "fileName": "motor_inspection.jpg",
+  "fileType": "image/jpeg",
+  "description": "Annual inspection showing motor condition",
+  "s3Key": "assets/asset-123/photo-003.jpg"
 }
 ```
 
-**Response:**
+**Response:** the stored photo record with its `mediaId`.
 ```json
 {
-  "id": "photo-003",
-  "filename": "motor_inspection.jpg",
-  "type": "image",
-  "size": 2048576,
+  "mediaId": "photo-003",
+  "s3Key": "assets/asset-123/photo-003.jpg",
+  "fileName": "motor_inspection.jpg",
+  "fileType": "image/jpeg",
   "description": "Annual inspection showing motor condition",
-  "uploadedBy": "user-001",
   "uploadedAt": "2024-10-15T11:20:00Z",
-  "thumbnailUrl": "https://s3.amazonaws.com/bucket/thumbs/photo-003.jpg",
-  "url": "https://s3.amazonaws.com/bucket/photos/photo-003.jpg"
+  "presignedUrl": "https://s3.amazonaws.com/bucket/assets/...?signature=..."
 }
-```
-
-**Example Request:**
-```bash
-curl -X POST "https://api-acme.f7i.ai/rcm/assets/asset-123/photos" \
-  -H "Authorization: Bearer YOUR_API_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "mediaId": "photo-003",
-    "filename": "motor_inspection.jpg",
-    "type": "image",
-    "size": 2048576,
-    "description": "Annual inspection showing motor condition"
-  }'
 ```
 
 ### Delete Asset Photo
-
-Removes a photo from an asset and deletes it.
 
 **Endpoint:** `DELETE /rcm/assets/{assetId}/photos/{mediaId}`
 
@@ -527,111 +501,32 @@ Removes a photo from an asset and deletes it.
 **Response:**
 ```json
 {
-  "message": "Photo deleted successfully",
-  "deletedAt": "2024-10-15T16:30:00Z"
+  "message": "Photo photo-003 deleted successfully"
 }
-```
-
-**Example Request:**
-```bash
-curl -X DELETE "https://api-acme.f7i.ai/rcm/assets/asset-123/photos/photo-003" \
-  -H "Authorization: Bearer YOUR_API_KEY" \
-  -H "Content-Type: application/json"
 ```
 
 ## Asset Photo Management Guidelines
 
-### Photo Organization and Hierarchy
+### Supported File Formats
+- **Images**: JPG, JPEG, PNG, GIF, WebP, HEIC, HEIF
 
-Asset photos are organized within the hierarchical asset structure, supporting both individual assets and component-level documentation:
-
-#### Asset-Level Photos
-- **General Views**: Overall equipment photos from different angles
-- **Nameplate Photos**: Asset identification and specification plates
-- **Installation Photos**: Equipment in operational environment
-- **Condition Photos**: Current state and wear indicators
-
-### Integration with Asset Registry
-- **Asset Hierarchy Integration**: Photos linked to specific assets and components
-- **Maintenance History**: Photos associated with work orders and maintenance events
-- **QR Code Access**: Mobile access to asset photos via QR code scanning
-- **Documentation Repository**: Photos integrated with technical documentation
-
-### Photo Categories for Assets
-
-#### Documentation Photos
-- **Technical Specifications**: Nameplate and specification photos
-- **Installation Documentation**: As-built and installation photos
-- **Schematic References**: Photos of electrical and mechanical schematics
-- **Vendor Documentation**: Manufacturer documentation and manuals
-
-#### Condition Assessment Photos
-- **Baseline Condition**: Initial installation condition photos
-- **Inspection Photos**: Regular condition assessment documentation
-- **Wear Monitoring**: Progressive wear and deterioration tracking
-- **Damage Documentation**: Incident and damage assessment photos
-
-#### Maintenance Documentation
-- **Procedure Photos**: Step-by-step maintenance documentation
-- **Access Points**: Service access and maintenance position photos
-- **Tool Requirements**: Required tools and equipment photos
-- **Safety Documentation**: Safety procedures and PPE requirements
-
-### Asset Photo Best Practices
-
-#### Photo Quality Standards
-- **High Resolution**: Minimum 1920x1080 for technical documentation
-- **Proper Lighting**: Well-lit photos for clear detail visibility
-- **Multiple Angles**: Comprehensive coverage from different perspectives
-- **Consistent Framing**: Standardized photo composition for comparison
-
-#### Documentation Standards
-- **Descriptive Filenames**: Clear, descriptive file naming conventions
-- **Detailed Descriptions**: Comprehensive photo descriptions and context
-- **Date Stamping**: Timestamp information for historical tracking
-- **Photographer Identification**: User tracking for accountability
-
-#### Mobile Photography Guidelines
-- **Field Documentation**: Optimize for mobile device capture
-- **Offline Capability**: Support for offline photo capture and sync
-- **QR Code Integration**: Quick asset identification and photo association
-- **GPS Tagging**: Location information for field documentation
+### What to photograph
+- **Nameplates**: the asset's identification and specification plates
+- **General views**: the whole asset from more than one angle
+- **Condition**: wear, damage and anything an inspection found
 
 ### Error Responses
 
 #### 400 Bad Request
 ```json
 {
-  "error": "Invalid asset photo data",
-  "details": {
-    "contentType": "File must be a valid image format",
-    "size": "File size must not exceed 10MB",
-    "filename": "Filename must be provided"
-  }
+  "message": "Missing fileName or fileType"
 }
 ```
 
 #### 404 Not Found
 ```json
 {
-  "error": "Asset not found",
-  "assetId": "asset-123"
-}
-```
-
-#### 403 Forbidden
-```json
-{
-  "error": "Insufficient permissions",
-  "message": "User does not have permission to manage photos for this asset"
-}
-```
-
-#### 413 Payload Too Large
-```json
-{
-  "error": "File too large",
-  "maxSize": "25MB",
-  "receivedSize": "27MB"
+  "message": "Asset with ID asset-999 not found"
 }
 ```
