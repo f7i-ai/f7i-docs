@@ -158,14 +158,6 @@ curl -X GET "https://api-acme.f7i.ai/rcm/work-orders?assignedTo=all&status=in-pr
 | `customFields` | object | Free-form data of your own. |
 | `autoKitParts` | boolean | Default `true`. When a `componentId` is given, the component's parts are added to the work order. Send `false` to skip that. |
 
-:::note Available from the next API release
-Three changes to this call are in the next release:
-
-- `estimatedDuration` accepts decimal numbers. Today a decimal is read oddly, so `0.5` can land as `500`. Send whole minutes until the release is out.
-- `createdAt` and `completedAt` are accepted on create so imported history keeps its original dates. `completedAt` needs a completed `status` and may not be before `createdAt`. Today both are ignored and set to the time of the call.
-- `updatedAt` is always set by the server and cannot be sent.
-:::
-
 **Request Body:**
 ```json
 {
@@ -332,6 +324,33 @@ Corrective and Emergency work orders need a `failureCodeId`, or a `skipReason`, 
 ```
 
 **Response:** `200 OK` with the whole work order as now stored.
+
+:::note Available from the next API release
+Today this call ignores `createdAt` and `completedAt`. To correct the dates before the release is out, delete the work order and create it again with its dates.
+:::
+
+### How do I correct the dates on a work order?
+
+Send `createdAt`, `completedAt` or both, as ISO 8601. Past dates are kept exactly as sent, and `updatedAt` still shows when you made the correction.
+
+| Field | Rule |
+|-------|------|
+| `createdAt` | May not be later than the `completedAt` the work order ends up with. |
+| `completedAt` | The work order must end up `completed`, so send `status` with it if it is not completed yet. May not be earlier than `createdAt`. |
+
+A bad date gets a `400` and nothing is saved. A work order loaded without its dates has today as its `createdAt`, so a past `completedAt` sent alone gets that `400`. Send both together:
+
+```json
+{
+  "createdAt": "2024-10-15T10:30:00Z",
+  "completedAt": "2024-11-01T15:10:00Z"
+}
+```
+
+- **Moving to completed.** A `completedAt` you send replaces the time of the call. A PM's strategy takes its Last Performed from this date too. It only ever moves forward.
+- **Sending a row back.** `null`, or the value already stored, counts as not sent. If you read a work order and send it back, its dates stay put, and reopening it still clears `completedAt`.
+- **Unassigned work orders.** With a new date in the request, the rest of the body saves as usual when `assignedTo` is `"unassigned"`, `""` or `null`. Without one, that value only clears the assignee and every other field is ignored.
+- **Grouped work orders.** On a group, `createdAt` changes the group itself, not its child work orders. With `completeChildren`, `completedAt` also goes on the children that closes. Dates are refused alongside `addAssetIds`.
 
 ## Delete Work Order
 
