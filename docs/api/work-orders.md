@@ -1,5 +1,5 @@
 ---
-sidebar_position: 7
+sidebar_position: 8
 ---
 
 # Work Orders API
@@ -196,6 +196,32 @@ Creates a new work order.
   "updatedAt": "2024-10-15T10:30:00Z"
 }
 ```
+
+## Create a Work Order from a PM Procedure
+
+**Endpoint:** `POST /rcm/work-orders`
+
+Pass the procedure's id as `pmProcedureId`. The procedure must exist in your tenant, or the request is rejected with 400.
+
+**Request Body:**
+```json
+{
+  "title": "Monthly pump inspection - Pump A1",
+  "assetId": "asset-456",
+  "type": "preventive",
+  "priority": "medium",
+  "pmProcedureId": "4d2c7a5e-8f1b-4c3a-9e6d-1a2b3c4d5e6f"
+}
+```
+
+What the API fills in:
+
+- `pmProcedureId` and the procedure's `strategyId` are recorded on the work order.
+- If the procedure links to a [job plan](./job-plans.md), the plan's active version (or the version the procedure pins with `jobPlanVersion`) is copied onto the work order. Each step becomes a task row, readable at `GET /rcm/work-orders/{workOrderId}/tasks`, and `requiredTools`, `requiredSkills`, `parts`, `permits` and `crafts` are filled in unless your body sets them. The copy is a snapshot: later changes to the job plan do not alter this work order.
+- A work order can also be raised straight from a job plan without a procedure: send `jobPlanId` (and optionally `jobPlanVersion`) instead of `pmProcedureId`.
+- A procedure with no job plan gives the work order no task rows; its own `steps` stay on the procedure.
+
+See [PM Procedures](./pm-procedures.md) for how procedures, components and job plans fit together.
 
 ## Get Work Order
 

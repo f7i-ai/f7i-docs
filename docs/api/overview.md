@@ -104,6 +104,7 @@ Prevent endpoints use the `rcm` service. They cover maintenance operations:
 - **[Failure Codes](./failure-codes.md)**: Equipment failure classification
 - **[Maintenance Strategies](./maintenance-strategies.md)**: Maintenance approaches and procedures
 - **[PM Procedures](./pm-procedures.md)**: Preventive maintenance procedures
+- **[Job Plans](./job-plans.md)**: Reusable, versioned step lists that PM procedures and work orders draw on
 - **[Work Orders](./work-orders.md)**: Maintenance work orders and tasks
 - **[Parts](./parts.md)**: Spare parts and components
 - **[Inventory](./inventory.md)**: Parts inventory management
