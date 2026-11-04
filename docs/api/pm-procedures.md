@@ -4,24 +4,26 @@ sidebar_position: 6
 
 # PM Procedures API
 
+**Service:** `rcm` (Prevent). All paths on this page start with `/rcm`, so the base is `https://api-<your-subdomain>.f7i.ai/rcm`.
+
 The PM Procedures API provides endpoints for managing Preventive Maintenance procedures and creating work orders from them.
 
 ## Endpoints Overview
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| GET | `/pms` | List all PM procedures |
-| POST | `/pms` | Create a new PM procedure |
-| GET | `/pms/{pmId}` | Get a specific PM procedure |
-| PUT | `/pms/{pmId}` | Update a PM procedure |
-| DELETE | `/pms/{pmId}` | Delete a PM procedure |
-| POST | `/pms/{pmId}/createworkorder` | Create work order from PM |
+| GET | `/rcm/pms` | List all PM procedures |
+| POST | `/rcm/pms` | Create a new PM procedure |
+| GET | `/rcm/pms/{pmId}` | Get a specific PM procedure |
+| PUT | `/rcm/pms/{pmId}` | Update a PM procedure |
+| DELETE | `/rcm/pms/{pmId}` | Delete a PM procedure |
+| POST | `/rcm/pms/{pmId}/createworkorder` | Create work order from PM |
 
 ## List PM Procedures
 
 Retrieves a list of all PM procedures.
 
-**Endpoint:** `GET /pms`
+**Endpoint:** `GET /rcm/pms`
 
 **Authentication:** Required
 
@@ -87,7 +89,7 @@ Retrieves a list of all PM procedures.
 
 **Example Request:**
 ```bash
-curl -X GET "https://api.acme.f7i.ai/prod/pms?frequency=monthly" \
+curl -X GET "https://api-acme.f7i.ai/rcm/pms?frequency=monthly" \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json"
 ```
@@ -96,7 +98,7 @@ curl -X GET "https://api.acme.f7i.ai/prod/pms?frequency=monthly" \
 
 Creates a new PM procedure.
 
-**Endpoint:** `POST /pms`
+**Endpoint:** `POST /rcm/pms`
 
 **Authentication:** Required
 
@@ -226,7 +228,7 @@ Creates a new PM procedure.
 
 Retrieves details of a specific PM procedure.
 
-**Endpoint:** `GET /pms/{pmId}`
+**Endpoint:** `GET /rcm/pms/{pmId}`
 
 **Authentication:** Required
 
@@ -293,7 +295,7 @@ Retrieves details of a specific PM procedure.
 
 Updates an existing PM procedure.
 
-**Endpoint:** `PUT /pms/{pmId}`
+**Endpoint:** `PUT /rcm/pms/{pmId}`
 
 **Authentication:** Required
 
@@ -332,7 +334,7 @@ Updates an existing PM procedure.
 
 Deletes a PM procedure from the system.
 
-**Endpoint:** `DELETE /pms/{pmId}`
+**Endpoint:** `DELETE /rcm/pms/{pmId}`
 
 **Authentication:** Required
 
@@ -351,7 +353,7 @@ Deletes a PM procedure from the system.
 
 Creates a work order based on a PM procedure.
 
-**Endpoint:** `POST /pms/{pmId}/createworkorder`
+**Endpoint:** `POST /rcm/pms/{pmId}/createworkorder`
 
 **Authentication:** Required
 

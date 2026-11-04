@@ -4,23 +4,25 @@ sidebar_position: 5
 
 # Maintenance Strategies API
 
+**Service:** `rcm` (Prevent). All paths on this page start with `/rcm`, so the base is `https://api-<your-subdomain>.f7i.ai/rcm`.
+
 The Maintenance Strategies API provides endpoints for managing different maintenance approaches and methodologies.
 
 ## Endpoints Overview
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| GET | `/strategies` | List all maintenance strategies |
-| POST | `/strategies` | Create a new maintenance strategy |
-| GET | `/strategies/{strategyId}` | Get a specific maintenance strategy |
-| PUT | `/strategies/{strategyId}` | Update a maintenance strategy |
-| DELETE | `/strategies/{strategyId}` | Delete a maintenance strategy |
+| GET | `/rcm/strategies` | List all maintenance strategies |
+| POST | `/rcm/strategies` | Create a new maintenance strategy |
+| GET | `/rcm/strategies/{strategyId}` | Get a specific maintenance strategy |
+| PUT | `/rcm/strategies/{strategyId}` | Update a maintenance strategy |
+| DELETE | `/rcm/strategies/{strategyId}` | Delete a maintenance strategy |
 
 ## List Maintenance Strategies
 
 Retrieves a list of all maintenance strategies.
 
-**Endpoint:** `GET /strategies`
+**Endpoint:** `GET /rcm/strategies`
 
 **Authentication:** Required
 
@@ -73,7 +75,7 @@ Retrieves a list of all maintenance strategies.
 
 **Example Request:**
 ```bash
-curl -X GET "https://api.acme.f7i.ai/prod/strategies?type=preventive" \
+curl -X GET "https://api-acme.f7i.ai/rcm/strategies?type=preventive" \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json"
 ```
@@ -82,7 +84,7 @@ curl -X GET "https://api.acme.f7i.ai/prod/strategies?type=preventive" \
 
 Creates a new maintenance strategy.
 
-**Endpoint:** `POST /strategies`
+**Endpoint:** `POST /rcm/strategies`
 
 **Authentication:** Required
 
@@ -174,7 +176,7 @@ Creates a new maintenance strategy.
 
 Retrieves details of a specific maintenance strategy.
 
-**Endpoint:** `GET /strategies/{strategyId}`
+**Endpoint:** `GET /rcm/strategies/{strategyId}`
 
 **Authentication:** Required
 
@@ -221,7 +223,7 @@ Retrieves details of a specific maintenance strategy.
 
 Updates an existing maintenance strategy.
 
-**Endpoint:** `PUT /strategies/{strategyId}`
+**Endpoint:** `PUT /rcm/strategies/{strategyId}`
 
 **Authentication:** Required
 
@@ -276,7 +278,7 @@ Updates an existing maintenance strategy.
 
 Deletes a maintenance strategy from the system.
 
-**Endpoint:** `DELETE /strategies/{strategyId}`
+**Endpoint:** `DELETE /rcm/strategies/{strategyId}`
 
 **Authentication:** Required
 

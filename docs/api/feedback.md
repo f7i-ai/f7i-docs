@@ -4,23 +4,25 @@ sidebar_position: 19
 
 # Feedback API
 
+**Service:** `predict` (Predict). All paths on this page start with `/predict`, so the base is `https://api-<your-subdomain>.f7i.ai/predict`.
+
 The Feedback API provides endpoints for managing user feedback on predictions and notifications. Feedback data is used to improve model accuracy and track the real-world outcomes of predictive alerts.
 
 ## Endpoints Overview
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| GET | `/feedback` | List all feedback |
-| POST | `/feedback` | Create new feedback |
-| GET | `/feedback/{id}` | Get specific feedback |
-| PUT | `/feedback/{id}` | Update feedback |
-| DELETE | `/feedback/{id}` | Delete feedback |
+| GET | `/predict/feedback` | List all feedback |
+| POST | `/predict/feedback` | Create new feedback |
+| GET | `/predict/feedback/{id}` | Get specific feedback |
+| PUT | `/predict/feedback/{id}` | Update feedback |
+| DELETE | `/predict/feedback/{id}` | Delete feedback |
 
 ## List Feedback
 
 Retrieves feedback records with optional filtering.
 
-**Endpoint:** `GET /feedback`
+**Endpoint:** `GET /predict/feedback`
 
 **Authentication:** Required
 
@@ -62,7 +64,7 @@ Retrieves feedback records with optional filtering.
 
 **Example Request:**
 ```bash
-curl -X GET "https://api.acme.f7i.ai/prod/feedback?failureMode=bearing_wear&limit=50" \
+curl -X GET "https://api-acme.f7i.ai/predict/feedback?failureMode=bearing_wear&limit=50" \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json"
 ```
@@ -71,7 +73,7 @@ curl -X GET "https://api.acme.f7i.ai/prod/feedback?failureMode=bearing_wear&limi
 
 Creates a new feedback record.
 
-**Endpoint:** `POST /feedback`
+**Endpoint:** `POST /predict/feedback`
 
 **Authentication:** Required
 
@@ -124,7 +126,7 @@ Creates a new feedback record.
 
 **Example Request:**
 ```bash
-curl -X POST "https://api.acme.f7i.ai/prod/feedback" \
+curl -X POST "https://api-acme.f7i.ai/predict/feedback" \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
@@ -140,7 +142,7 @@ curl -X POST "https://api.acme.f7i.ai/prod/feedback" \
 
 Retrieves a specific feedback record by ID.
 
-**Endpoint:** `GET /feedback/{id}`
+**Endpoint:** `GET /predict/feedback/{id}`
 
 **Authentication:** Required
 
@@ -176,7 +178,7 @@ Retrieves a specific feedback record by ID.
 
 **Example Request:**
 ```bash
-curl -X GET "https://api.acme.f7i.ai/prod/feedback/feedback-123" \
+curl -X GET "https://api-acme.f7i.ai/predict/feedback/feedback-123" \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json"
 ```
@@ -185,7 +187,7 @@ curl -X GET "https://api.acme.f7i.ai/prod/feedback/feedback-123" \
 
 Updates an existing feedback record.
 
-**Endpoint:** `PUT /feedback/{id}`
+**Endpoint:** `PUT /predict/feedback/{id}`
 
 **Authentication:** Required
 
@@ -234,7 +236,7 @@ Updates an existing feedback record.
 
 **Example Request:**
 ```bash
-curl -X PUT "https://api.acme.f7i.ai/prod/feedback/feedback-123" \
+curl -X PUT "https://api-acme.f7i.ai/predict/feedback/feedback-123" \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
@@ -247,7 +249,7 @@ curl -X PUT "https://api.acme.f7i.ai/prod/feedback/feedback-123" \
 
 Deletes a feedback record.
 
-**Endpoint:** `DELETE /feedback/{id}`
+**Endpoint:** `DELETE /predict/feedback/{id}`
 
 **Authentication:** Required
 
@@ -266,7 +268,7 @@ Deletes a feedback record.
 
 **Example Request:**
 ```bash
-curl -X DELETE "https://api.acme.f7i.ai/prod/feedback/feedback-123" \
+curl -X DELETE "https://api-acme.f7i.ai/predict/feedback/feedback-123" \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json"
 ```

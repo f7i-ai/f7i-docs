@@ -4,22 +4,24 @@ sidebar_position: 11
 
 # Customer Settings API
 
+**Service:** `rcm` (Prevent). All paths on this page start with `/rcm`, so the base is `https://api-<your-subdomain>.f7i.ai/rcm`.
+
 The Customer Settings API provides endpoints for managing customer-specific configuration settings and preferences.
 
 ## Endpoints Overview
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| GET | `/customer-settings` | Get customer settings |
-| POST | `/customer-settings` | Create customer settings |
-| PUT | `/customer-settings` | Update customer settings |
-| DELETE | `/customer-settings` | Delete customer settings |
+| GET | `/rcm/customer-settings` | Get customer settings |
+| POST | `/rcm/customer-settings` | Create customer settings |
+| PUT | `/rcm/customer-settings` | Update customer settings |
+| DELETE | `/rcm/customer-settings` | Delete customer settings |
 
 ## Get Customer Settings
 
 Retrieves the customer settings and configuration.
 
-**Endpoint:** `GET /customer-settings`
+**Endpoint:** `GET /rcm/customer-settings`
 
 **Authentication:** Required
 
@@ -128,7 +130,7 @@ Retrieves the customer settings and configuration.
 
 **Example Request:**
 ```bash
-curl -X GET "https://api.acme.f7i.ai/prod/customer-settings?category=notifications" \
+curl -X GET "https://api-acme.f7i.ai/rcm/customer-settings?category=notifications" \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json"
 ```
@@ -137,7 +139,7 @@ curl -X GET "https://api.acme.f7i.ai/prod/customer-settings?category=notificatio
 
 Creates initial customer settings configuration.
 
-**Endpoint:** `POST /customer-settings`
+**Endpoint:** `POST /rcm/customer-settings`
 
 **Authentication:** Required
 
@@ -227,7 +229,7 @@ Creates initial customer settings configuration.
 
 Updates existing customer settings.
 
-**Endpoint:** `PUT /customer-settings`
+**Endpoint:** `PUT /rcm/customer-settings`
 
 **Authentication:** Required
 
@@ -325,7 +327,7 @@ Updates existing customer settings.
 
 Resets customer settings to defaults.
 
-**Endpoint:** `DELETE /customer-settings`
+**Endpoint:** `DELETE /rcm/customer-settings`
 
 **Authentication:** Required
 

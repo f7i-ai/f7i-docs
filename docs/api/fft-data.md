@@ -4,20 +4,22 @@ sidebar_position: 18
 
 # FFT Data API
 
+**Service:** `predict` (Predict). All paths on this page start with `/predict`, so the base is `https://api-<your-subdomain>.f7i.ai/predict`.
+
 The FFT Data API provides endpoints for retrieving Fast Fourier Transform (FFT) frequency analysis data from vibration sensors. FFT data is essential for identifying specific frequency components that indicate mechanical issues such as imbalance, misalignment, or bearing defects.
 
 ## Endpoints Overview
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| GET | `/fft-data` | List FFT data records |
-| GET | `/fft-data/{id}` | Get specific FFT data |
+| GET | `/predict/fft-data` | List FFT data records |
+| GET | `/predict/fft-data/{id}` | Get specific FFT data |
 
 ## List FFT Data
 
 Retrieves FFT data records with optional filtering.
 
-**Endpoint:** `GET /fft-data`
+**Endpoint:** `GET /predict/fft-data`
 
 **Authentication:** Required
 
@@ -72,7 +74,7 @@ Retrieves FFT data records with optional filtering.
 
 **Example Request:**
 ```bash
-curl -X GET "https://api.acme.f7i.ai/prod/fft-data?sensorId=sensor-456&limit=50" \
+curl -X GET "https://api-acme.f7i.ai/predict/fft-data?sensorId=sensor-456&limit=50" \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json"
 ```
@@ -81,7 +83,7 @@ curl -X GET "https://api.acme.f7i.ai/prod/fft-data?sensorId=sensor-456&limit=50"
 
 Retrieves a specific FFT data record by ID.
 
-**Endpoint:** `GET /fft-data/{id}`
+**Endpoint:** `GET /predict/fft-data/{id}`
 
 **Authentication:** Required
 
@@ -128,7 +130,7 @@ Retrieves a specific FFT data record by ID.
 
 **Example Request:**
 ```bash
-curl -X GET "https://api.acme.f7i.ai/prod/fft-data/fft-123" \
+curl -X GET "https://api-acme.f7i.ai/predict/fft-data/fft-123" \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json"
 ```

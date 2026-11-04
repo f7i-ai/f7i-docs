@@ -4,20 +4,22 @@ sidebar_position: 20
 
 # Metrics API
 
+**Service:** `predict` (Predict). All paths on this page start with `/predict`, so the base is `https://api-<your-subdomain>.f7i.ai/predict`.
+
 The Metrics API provides endpoints for retrieving high-level dashboard metrics, including ROI calculations, asset counts, and system health indicators.
 
 ## Endpoints Overview
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| GET | `/metrics` | List all metrics |
-| GET | `/metrics/{id}` | Get specific metrics |
+| GET | `/predict/metrics` | List all metrics |
+| GET | `/predict/metrics/{id}` | Get specific metrics |
 
 ## List Metrics
 
 Retrieves metrics records with optional filtering.
 
-**Endpoint:** `GET /metrics`
+**Endpoint:** `GET /predict/metrics`
 
 **Authentication:** Required
 
@@ -55,7 +57,7 @@ Retrieves metrics records with optional filtering.
 
 **Example Request:**
 ```bash
-curl -X GET "https://api.acme.f7i.ai/prod/metrics?companyName=Acme%20Corp&siteName=Main%20Plant" \
+curl -X GET "https://api-acme.f7i.ai/predict/metrics?companyName=Acme%20Corp&siteName=Main%20Plant" \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json"
 ```
@@ -64,7 +66,7 @@ curl -X GET "https://api.acme.f7i.ai/prod/metrics?companyName=Acme%20Corp&siteNa
 
 Retrieves a specific metrics record by ID.
 
-**Endpoint:** `GET /metrics/{id}`
+**Endpoint:** `GET /predict/metrics/{id}`
 
 **Authentication:** Required
 
@@ -95,7 +97,7 @@ Retrieves a specific metrics record by ID.
 
 **Example Request:**
 ```bash
-curl -X GET "https://api.acme.f7i.ai/prod/metrics/a826a2f8-ceee-45ac-9ebd-4522c4202027" \
+curl -X GET "https://api-acme.f7i.ai/predict/metrics/a826a2f8-ceee-45ac-9ebd-4522c4202027" \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json"
 ```

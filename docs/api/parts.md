@@ -4,32 +4,34 @@ sidebar_position: 8
 
 # Parts API
 
+**Service:** `rcm` (Prevent). All paths on this page start with `/rcm`, so the base is `https://api-<your-subdomain>.f7i.ai/rcm`.
+
 The Parts API provides endpoints for managing spare parts and components in your maintenance system.
 
 ## Endpoints Overview
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| GET | `/parts` | List all parts |
-| POST | `/parts` | Create a new part |
-| GET | `/parts/{partId}` | Get a specific part |
-| PUT | `/parts/{partId}` | Update a part |
-| DELETE | `/parts/{partId}` | Delete a part |
+| GET | `/rcm/parts` | List all parts |
+| POST | `/rcm/parts` | Create a new part |
+| GET | `/rcm/parts/{partId}` | Get a specific part |
+| PUT | `/rcm/parts/{partId}` | Update a part |
+| DELETE | `/rcm/parts/{partId}` | Delete a part |
 
 ## Photo Management Endpoints
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| GET | `/parts/{partId}/photos` | List part photos |
-| POST | `/parts/{partId}/photos/presigned-url` | Get presigned upload URL |
-| POST | `/parts/{partId}/photos` | Add photo metadata |
-| DELETE | `/parts/{partId}/photos/{mediaId}` | Delete part photo |
+| GET | `/rcm/parts/{partId}/photos` | List part photos |
+| POST | `/rcm/parts/{partId}/photos/presigned-upload-url` | Get presigned upload URL |
+| POST | `/rcm/parts/{partId}/photos` | Add photo metadata |
+| DELETE | `/rcm/parts/{partId}/photos/{mediaId}` | Delete part photo |
 
 ## List Parts
 
 Retrieves a list of all parts.
 
-**Endpoint:** `GET /parts`
+**Endpoint:** `GET /rcm/parts`
 
 **Authentication:** Required
 
@@ -71,7 +73,7 @@ Retrieves a list of all parts.
 
 **Example Request:**
 ```bash
-curl -X GET "https://api.acme.f7i.ai/prod/parts?category=Bearings&inStock=true" \
+curl -X GET "https://api-acme.f7i.ai/rcm/parts?category=Bearings&inStock=true" \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json"
 ```
@@ -80,7 +82,7 @@ curl -X GET "https://api.acme.f7i.ai/prod/parts?category=Bearings&inStock=true" 
 
 Creates a new part record.
 
-**Endpoint:** `POST /parts`
+**Endpoint:** `POST /rcm/parts`
 
 **Authentication:** Required
 
@@ -146,7 +148,7 @@ Creates a new part record.
 
 Retrieves details of a specific part.
 
-**Endpoint:** `GET /parts/{partId}`
+**Endpoint:** `GET /rcm/parts/{partId}`
 
 **Authentication:** Required
 
@@ -226,7 +228,7 @@ Retrieves details of a specific part.
 
 Updates an existing part.
 
-**Endpoint:** `PUT /parts/{partId}`
+**Endpoint:** `PUT /rcm/parts/{partId}`
 
 **Authentication:** Required
 
@@ -287,7 +289,7 @@ Updates an existing part.
 
 Deletes a part from the system (soft delete - marks as inactive).
 
-**Endpoint:** `DELETE /parts/{partId}`
+**Endpoint:** `DELETE /rcm/parts/{partId}`
 
 **Authentication:** Required
 
@@ -373,7 +375,7 @@ Supported units of measure:
 
 Retrieves a list of all photos associated with a specific part.
 
-**Endpoint:** `GET /parts/{partId}/photos`
+**Endpoint:** `GET /rcm/parts/{partId}/photos`
 
 **Authentication:** Required
 
@@ -410,7 +412,7 @@ Retrieves a list of all photos associated with a specific part.
 
 **Example Request:**
 ```bash
-curl -X GET "https://api.acme.f7i.ai/prod/parts/part-001/photos" \
+curl -X GET "https://api-acme.f7i.ai/rcm/parts/part-001/photos" \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json"
 ```
@@ -419,7 +421,7 @@ curl -X GET "https://api.acme.f7i.ai/prod/parts/part-001/photos" \
 
 Generates a presigned URL for uploading a photo directly.
 
-**Endpoint:** `POST /parts/{partId}/photos/presigned-url`
+**Endpoint:** `POST /rcm/parts/{partId}/photos/presigned-upload-url`
 
 **Authentication:** Required
 
@@ -452,7 +454,7 @@ Generates a presigned URL for uploading a photo directly.
 
 **Example Request:**
 ```bash
-curl -X POST "https://api.acme.f7i.ai/prod/parts/part-001/photos/presigned-url" \
+curl -X POST "https://api-acme.f7i.ai/rcm/parts/part-001/photos/presigned-upload-url" \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
@@ -466,7 +468,7 @@ curl -X POST "https://api.acme.f7i.ai/prod/parts/part-001/photos/presigned-url" 
 
 Adds photo metadata after successful upload.
 
-**Endpoint:** `POST /parts/{partId}/photos`
+**Endpoint:** `POST /rcm/parts/{partId}/photos`
 
 **Authentication:** Required
 
@@ -501,7 +503,7 @@ Adds photo metadata after successful upload.
 
 **Example Request:**
 ```bash
-curl -X POST "https://api.acme.f7i.ai/prod/parts/part-001/photos" \
+curl -X POST "https://api-acme.f7i.ai/rcm/parts/part-001/photos" \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
@@ -517,7 +519,7 @@ curl -X POST "https://api.acme.f7i.ai/prod/parts/part-001/photos" \
 
 Removes a photo from a part
 
-**Endpoint:** `DELETE /parts/{partId}/photos/{mediaId}`
+**Endpoint:** `DELETE /rcm/parts/{partId}/photos/{mediaId}`
 
 **Authentication:** Required
 
@@ -535,7 +537,7 @@ Removes a photo from a part
 
 **Example Request:**
 ```bash
-curl -X DELETE "https://api.acme.f7i.ai/prod/parts/part-001/photos/photo-003" \
+curl -X DELETE "https://api-acme.f7i.ai/rcm/parts/part-001/photos/photo-003" \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json"
 ```

@@ -4,22 +4,24 @@ sidebar_position: 12
 
 # Documents API
 
+**Service:** `rcm` (Prevent). All paths on this page start with `/rcm`, so the base is `https://api-<your-subdomain>.f7i.ai/rcm`.
+
 The Documents API provides endpoints for managing document uploads, storage, and retrieval within the maintenance system.
 
 ## Endpoints Overview
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| POST | `/documents` | Upload a new document |
-| GET | `/documents/{documentId}` | Get document metadata |
-| DELETE | `/documents/{documentId}` | Delete a document |
-| GET | `/documents/{documentId}/download-url` | Get presigned download URL |
+| POST | `/rcm/documents` | Upload a new document |
+| GET | `/rcm/documents/{documentId}` | Get document metadata |
+| DELETE | `/rcm/documents/{documentId}` | Delete a document |
+| GET | `/rcm/documents/{documentId}/download-url` | Get presigned download URL |
 
 ## Upload Document
 
 Uploads a new document to the system.
 
-**Endpoint:** `POST /documents`
+**Endpoint:** `POST /rcm/documents`
 
 **Authentication:** Required
 
@@ -50,7 +52,7 @@ Uploads a new document to the system.
 
 **Example Request (Multipart):**
 ```bash
-curl -X POST "https://api.acme.f7i.ai/prod/documents" \
+curl -X POST "https://api-acme.f7i.ai/rcm/documents" \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -F "file=@manual.pdf" \
   -F "title=Pump Maintenance Manual" \
@@ -99,7 +101,7 @@ curl -X POST "https://api.acme.f7i.ai/prod/documents" \
 
 Retrieves metadata for a specific document.
 
-**Endpoint:** `GET /documents/{documentId}`
+**Endpoint:** `GET /rcm/documents/{documentId}`
 
 **Authentication:** Required
 
@@ -168,7 +170,7 @@ Retrieves metadata for a specific document.
 
 **Example Request:**
 ```bash
-curl -X GET "https://api.acme.f7i.ai/prod/documents/doc-001" \
+curl -X GET "https://api-acme.f7i.ai/rcm/documents/doc-001" \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json"
 ```
@@ -177,7 +179,7 @@ curl -X GET "https://api.acme.f7i.ai/prod/documents/doc-001" \
 
 Deletes a document from the system.
 
-**Endpoint:** `DELETE /documents/{documentId}`
+**Endpoint:** `DELETE /rcm/documents/{documentId}`
 
 **Authentication:** Required
 
@@ -200,7 +202,7 @@ Deletes a document from the system.
 
 **Example Request:**
 ```bash
-curl -X DELETE "https://api.acme.f7i.ai/prod/documents/doc-001" \
+curl -X DELETE "https://api-acme.f7i.ai/rcm/documents/doc-001" \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json"
 ```
@@ -209,7 +211,7 @@ curl -X DELETE "https://api.acme.f7i.ai/prod/documents/doc-001" \
 
 Generates a presigned URL for downloading a document.
 
-**Endpoint:** `GET /documents/{documentId}/download-url`
+**Endpoint:** `GET /rcm/documents/{documentId}/download-url`
 
 **Authentication:** Required
 
@@ -234,7 +236,7 @@ Generates a presigned URL for downloading a document.
 
 **Example Request:**
 ```bash
-curl -X GET "https://api.acme.f7i.ai/prod/documents/doc-001/download-url?expiresIn=7200" \
+curl -X GET "https://api-acme.f7i.ai/rcm/documents/doc-001/download-url?expiresIn=7200" \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json"
 ```

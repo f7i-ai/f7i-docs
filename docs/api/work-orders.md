@@ -4,55 +4,57 @@ sidebar_position: 7
 
 # Work Orders API
 
+**Service:** `rcm` (Prevent). All paths on this page start with `/rcm`, so the base is `https://api-<your-subdomain>.f7i.ai/rcm`.
+
 The Work Orders API provides comprehensive endpoints for managing maintenance work orders, including notes, media attachments, tasks, and parts management.
 
 ## Main Endpoints
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| GET | `/work-orders` | List all work orders |
-| POST | `/work-orders` | Create a new work order |
-| GET | `/work-orders/{workOrderId}` | Get a specific work order |
-| PUT | `/work-orders/{workOrderId}` | Update a work order |
-| DELETE | `/work-orders/{workOrderId}` | Delete a work order |
+| GET | `/rcm/work-orders` | List all work orders |
+| POST | `/rcm/work-orders` | Create a new work order |
+| GET | `/rcm/work-orders/{workOrderId}` | Get a specific work order |
+| PUT | `/rcm/work-orders/{workOrderId}` | Update a work order |
+| DELETE | `/rcm/work-orders/{workOrderId}` | Delete a work order |
 
 ## Sub-Resource Endpoints
 
 ### Notes
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| GET | `/work-orders/{workOrderId}/notes` | List work order notes |
-| POST | `/work-orders/{workOrderId}/notes` | Add a note |
+| GET | `/rcm/work-orders/{workOrderId}/notes` | List work order notes |
+| POST | `/rcm/work-orders/{workOrderId}/notes` | Add a note |
 
 ### Media
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| GET | `/work-orders/{workOrderId}/media` | List media files |
-| POST | `/work-orders/{workOrderId}/media` | Upload media |
-| POST | `/work-orders/{workOrderId}/media/presigned-url` | Get presigned upload URL |
-| DELETE | `/work-orders/{workOrderId}/media/{mediaId}` | Delete media |
+| GET | `/rcm/work-orders/{workOrderId}/media` | List media files |
+| POST | `/rcm/work-orders/{workOrderId}/media` | Upload media |
+| POST | `/rcm/work-orders/{workOrderId}/media/presigned-url` | Get presigned upload URL |
+| DELETE | `/rcm/work-orders/{workOrderId}/media/{mediaId}` | Delete media |
 
 ### Tasks
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| GET | `/work-orders/{workOrderId}/tasks` | List tasks |
-| POST | `/work-orders/{workOrderId}/tasks` | Add a task |
-| PUT | `/work-orders/{workOrderId}/tasks/{taskId}` | Update task |
-| DELETE | `/work-orders/{workOrderId}/tasks/{taskId}` | Delete task |
+| GET | `/rcm/work-orders/{workOrderId}/tasks` | List tasks |
+| POST | `/rcm/work-orders/{workOrderId}/tasks` | Add a task |
+| PUT | `/rcm/work-orders/{workOrderId}/tasks/{taskId}` | Update task |
+| DELETE | `/rcm/work-orders/{workOrderId}/tasks/{taskId}` | Delete task |
 
 ### Parts
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| GET | `/work-orders/{workOrderId}/parts` | List required parts |
-| POST | `/work-orders/{workOrderId}/parts` | Add a part |
-| PUT | `/work-orders/{workOrderId}/parts/{partId}` | Update part |
-| DELETE | `/work-orders/{workOrderId}/parts/{partId}` | Remove part |
+| GET | `/rcm/work-orders/{workOrderId}/parts` | List required parts |
+| POST | `/rcm/work-orders/{workOrderId}/parts` | Add a part |
+| PUT | `/rcm/work-orders/{workOrderId}/parts/{partId}` | Update part |
+| DELETE | `/rcm/work-orders/{workOrderId}/parts/{partId}` | Remove part |
 
 ## List Work Orders
 
 Retrieves a list of all work orders.
 
-**Endpoint:** `GET /work-orders`
+**Endpoint:** `GET /rcm/work-orders`
 
 **Authentication:** Required
 
@@ -98,7 +100,7 @@ Retrieves a list of all work orders.
 
 **Example Request:**
 ```bash
-curl -X GET "https://api.acme.f7i.ai/prod/work-orders?status=in_progress&priority=high" \
+curl -X GET "https://api-acme.f7i.ai/rcm/work-orders?status=in_progress&priority=high" \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json"
 ```
@@ -107,7 +109,7 @@ curl -X GET "https://api.acme.f7i.ai/prod/work-orders?status=in_progress&priorit
 
 Creates a new work order.
 
-**Endpoint:** `POST /work-orders`
+**Endpoint:** `POST /rcm/work-orders`
 
 **Authentication:** Required
 
@@ -199,7 +201,7 @@ Creates a new work order.
 
 Retrieves details of a specific work order.
 
-**Endpoint:** `GET /work-orders/{workOrderId}`
+**Endpoint:** `GET /rcm/work-orders/{workOrderId}`
 
 **Authentication:** Required
 
@@ -287,7 +289,7 @@ Retrieves details of a specific work order.
 
 Updates an existing work order.
 
-**Endpoint:** `PUT /work-orders/{workOrderId}`
+**Endpoint:** `PUT /rcm/work-orders/{workOrderId}`
 
 **Authentication:** Required
 
@@ -309,7 +311,7 @@ Updates an existing work order.
 
 Deletes a work order from the system.
 
-**Endpoint:** `DELETE /work-orders/{workOrderId}`
+**Endpoint:** `DELETE /rcm/work-orders/{workOrderId}`
 
 **Authentication:** Required
 
@@ -328,7 +330,7 @@ Deletes a work order from the system.
 
 ### List Notes
 
-**Endpoint:** `GET /work-orders/{workOrderId}/notes`
+**Endpoint:** `GET /rcm/work-orders/{workOrderId}/notes`
 
 **Response:**
 ```json
@@ -347,7 +349,7 @@ Deletes a work order from the system.
 
 ### Add Note
 
-**Endpoint:** `POST /work-orders/{workOrderId}/notes`
+**Endpoint:** `POST /rcm/work-orders/{workOrderId}/notes`
 
 **Request Body:**
 ```json
@@ -366,7 +368,7 @@ Work order media endpoints use the same underlying photo management infrastructu
 
 ### List Media
 
-**Endpoint:** `GET /work-orders/{workOrderId}/media`
+**Endpoint:** `GET /rcm/work-orders/{workOrderId}/media`
 
 **Response:**
 ```json
@@ -388,7 +390,7 @@ Work order media endpoints use the same underlying photo management infrastructu
 
 ### Get Presigned Upload URL
 
-**Endpoint:** `POST /work-orders/{workOrderId}/media/presigned-url`
+**Endpoint:** `POST /rcm/work-orders/{workOrderId}/media/presigned-url`
 
 **Request Body:**
 ```json
@@ -410,7 +412,7 @@ Work order media endpoints use the same underlying photo management infrastructu
 
 ### Upload Media
 
-**Endpoint:** `POST /work-orders/{workOrderId}/media`
+**Endpoint:** `POST /rcm/work-orders/{workOrderId}/media`
 
 **Request:** Multipart form data with file
 
@@ -429,11 +431,11 @@ Work order media endpoints use the same underlying photo management infrastructu
 
 ### List Tasks
 
-**Endpoint:** `GET /work-orders/{workOrderId}/tasks`
+**Endpoint:** `GET /rcm/work-orders/{workOrderId}/tasks`
 
 ### Add Task
 
-**Endpoint:** `POST /work-orders/{workOrderId}/tasks`
+**Endpoint:** `POST /rcm/work-orders/{workOrderId}/tasks`
 
 **Request Body:**
 ```json
@@ -447,7 +449,7 @@ Work order media endpoints use the same underlying photo management infrastructu
 
 ### Update Task
 
-**Endpoint:** `PUT /work-orders/{workOrderId}/tasks/{taskId}`
+**Endpoint:** `PUT /rcm/work-orders/{workOrderId}/tasks/{taskId}`
 
 **Request Body:**
 ```json
@@ -462,11 +464,11 @@ Work order media endpoints use the same underlying photo management infrastructu
 
 ### List Parts
 
-**Endpoint:** `GET /work-orders/{workOrderId}/parts`
+**Endpoint:** `GET /rcm/work-orders/{workOrderId}/parts`
 
 ### Add Part
 
-**Endpoint:** `POST /work-orders/{workOrderId}/parts`
+**Endpoint:** `POST /rcm/work-orders/{workOrderId}/parts`
 
 **Request Body:**
 ```json
@@ -479,7 +481,7 @@ Work order media endpoints use the same underlying photo management infrastructu
 
 ### Update Part
 
-**Endpoint:** `PUT /work-orders/{workOrderId}/parts/{partId}`
+**Endpoint:** `PUT /rcm/work-orders/{workOrderId}/parts/{partId}`
 
 **Request Body:**
 ```json
