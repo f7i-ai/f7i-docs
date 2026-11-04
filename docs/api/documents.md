@@ -65,7 +65,7 @@ curl -X POST "https://api-acme.f7i.ai/rcm/documents" \
 **Response:**
 ```json
 {
-  "id": "doc-001",
+  "documentId": "doc-001",
   "title": "Pump Maintenance Manual",
   "filename": "manual.pdf",
   "originalFilename": "pump_manual_v2.pdf",
@@ -111,7 +111,7 @@ Retrieves metadata for a specific document.
 **Response:**
 ```json
 {
-  "id": "doc-001",
+  "documentId": "doc-001",
   "title": "Pump Maintenance Manual",
   "filename": "manual.pdf",
   "originalFilename": "pump_manual_v2.pdf",
@@ -160,7 +160,7 @@ Retrieves metadata for a specific document.
   },
   "relatedDocuments": [
     {
-      "id": "doc-002",
+      "documentId": "doc-002",
       "title": "Pump Installation Guide",
       "relationship": "related"
     }

@@ -38,7 +38,7 @@ Retrieves a list of all maintenance strategies.
 {
   "strategies": [
     {
-      "id": "strat-001",
+      "strategyId": "strat-001",
       "name": "Preventive Maintenance Strategy",
       "type": "preventive",
       "description": "Time-based maintenance strategy for critical equipment",
@@ -131,7 +131,7 @@ Creates a new maintenance strategy.
 **Response:**
 ```json
 {
-  "id": "strat-002",
+  "strategyId": "strat-002",
   "name": "Condition-Based Monitoring Strategy",
   "type": "condition-based",
   "description": "Sensor-based monitoring strategy for rotating equipment",
@@ -186,7 +186,7 @@ Retrieves details of a specific maintenance strategy.
 **Response:**
 ```json
 {
-  "id": "strat-001",
+  "strategyId": "strat-001",
   "name": "Preventive Maintenance Strategy",
   "type": "preventive",
   "description": "Time-based maintenance strategy for critical equipment",
@@ -247,7 +247,7 @@ Updates an existing maintenance strategy.
 **Response:**
 ```json
 {
-  "id": "strat-001",
+  "strategyId": "strat-001",
   "name": "Preventive Maintenance Strategy",
   "type": "preventive",
   "description": "Updated preventive maintenance strategy with reduced frequency",

@@ -6,54 +6,73 @@ sidebar_position: 10
 
 **Service:** `rcm` (Prevent). All paths on this page start with `/rcm`, so the base is `https://api-<your-subdomain>.f7i.ai/rcm`.
 
-The Inventory API provides endpoints for managing parts inventory, tracking stock levels, adjustments, and generating inventory reports.
+The Inventory API tracks stock on hand. Stock is kept **per part, per site**: one inventory row for each part at each site, or at each bin location within a site. A part's record in the [Parts API](./parts.md) holds no quantity.
 
 ## Endpoints Overview
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| GET | `/rcm/inventory` | List all inventory records |
-| GET | `/rcm/inventory/{partId}` | Get inventory for a specific part |
-| PUT | `/rcm/inventory/{partId}` | Update inventory for a part |
-| DELETE | `/rcm/inventory/{partId}` | Delete inventory record |
-| GET | `/rcm/inventory/{partId}/history` | Get inventory history |
-| POST | `/rcm/inventory/{partId}/adjustments` | Make inventory adjustment |
-| GET | `/rcm/inventory/reports` | Get inventory reports |
+| GET | `/rcm/inventory` | List inventory rows |
+| GET | `/rcm/inventory/{partId}` | Get inventory for a part |
+| PUT | `/rcm/inventory/{partId}` | Set stock for a part at a site |
+| DELETE | `/rcm/inventory/{partId}` | Delete an inventory row |
+| GET | `/rcm/inventory/{partId}/history` | Get the part's stock history |
+| POST | `/rcm/inventory/{partId}/adjustments` | Add or remove a quantity |
+| POST | `/rcm/inventory/{partId}/transfer` | Move stock between sites or locations |
+| GET | `/rcm/inventory/reports` | Valuation and low-stock reports |
+| GET | `/rcm/inventory/locations` | List bin locations |
+| GET, PUT, DELETE | `/rcm/inventory/{partId}/location` | Read, set or clear a part's bin location |
+| POST | `/rcm/inventory/bulk` | Set stock for many parts in one call |
+
+## Setting an opening quantity
+
+To load stock for a part you have just created, send one `PUT /rcm/inventory/{partId}` per site:
+
+```bash
+curl -X PUT "https://api-acme.f7i.ai/rcm/inventory/c3d4e5f6-a7b8-4c9d-8e0f-1a2b3c4d5e6f" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "site": "main-facility",
+    "quantity": 15,
+    "minStockLevel": 5,
+    "maxStockLevel": 50,
+    "reason": "Opening stock from legacy system"
+  }'
+```
+
+`site` is required. `quantity` is the absolute count. The row is created if it does not exist yet. Use `POST /rcm/inventory/{partId}/adjustments` when you want to add or subtract instead.
 
 ## List Inventory
-
-Retrieves inventory information for all parts.
 
 **Endpoint:** `GET /rcm/inventory`
 
 **Authentication:** Required
 
 **Query Parameters:**
-- `limit` (optional): Maximum number of inventory records to return
-- `offset` (optional): Number of records to skip for pagination
-- `search` (optional): Search term to filter parts
-- `location` (optional): Filter by storage location
-- `lowStock` (optional): Show only low stock items (true/false)
-- `outOfStock` (optional): Show only out of stock items (true/false)
-- `category` (optional): Filter by part category
+- `site` (optional): rows at one site, including its bin locations
+- `lowStock` (optional): `true` returns only rows at or below their `minStockLevel`
 
-**Response:**
+There is no `offset`, `limit`, `search`, `location`, `outOfStock` or `category` filter. Rows for the same part at several bin locations within a site are summed into one row per part and site.
+
+**Response:** a JSON array.
 ```json
 [
   {
-    "partId": "part-001",
+    "inventoryId": "e5f6a7b8-c9d0-4e1f-8a2b-3c4d5e6f7a8b",
+    "partId": "c3d4e5f6-a7b8-4c9d-8e0f-1a2b3c4d5e6f",
     "site": "main-facility",
     "tenantId": "tenant-123",
     "quantity": 15,
     "minStockLevel": 5,
     "maxStockLevel": 50,
-    "createdAt": "2024-01-15T10:30:00Z",
-    "updatedAt": "2024-10-10T14:30:00Z",
+    "createdAt": "2024-01-15T10:30:00",
+    "updatedAt": "2024-10-10T14:30:00",
     "partDetails": {
       "partNumber": "SKF-6204",
       "name": "Ball Bearing 6204",
       "unit": "each",
-      "cost": 75.50
+      "cost": 75.5
     }
   }
 ]
@@ -61,14 +80,12 @@ Retrieves inventory information for all parts.
 
 **Example Request:**
 ```bash
-curl -X GET "https://api-acme.f7i.ai/rcm/inventory?lowStock=true" \
+curl -X GET "https://api-acme.f7i.ai/rcm/inventory?site=main-facility&lowStock=true" \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json"
 ```
 
 ## Get Part Inventory
-
-Retrieves inventory details for a specific part.
 
 **Endpoint:** `GET /rcm/inventory/{partId}`
 
@@ -77,125 +94,134 @@ Retrieves inventory details for a specific part.
 **Path Parameters:**
 - `partId`: Unique identifier of the part
 
-**For specific part (with site parameter):**
+**Query Parameters:**
+- `site` (optional): one site's row
+
+**With `site`:** the row for that site. 404 if the part has no stock there.
 ```json
 {
-  "partId": "part-001",
+  "inventoryId": "e5f6a7b8-c9d0-4e1f-8a2b-3c4d5e6f7a8b",
+  "partId": "c3d4e5f6-a7b8-4c9d-8e0f-1a2b3c4d5e6f",
   "site": "main-facility",
   "tenantId": "tenant-123",
   "quantity": 15,
   "minStockLevel": 5,
   "maxStockLevel": 50,
   "exists": true,
-  "createdAt": "2024-01-15T10:30:00Z",
-  "updatedAt": "2024-10-10T14:30:00Z"
+  "createdAt": "2024-01-15T10:30:00",
+  "updatedAt": "2024-10-10T14:30:00"
 }
 ```
 
-**For all sites (without site parameter):**
+**Without `site`:** the part and every one of its rows.
 ```json
 {
   "part": {
-    "partId": "part-001",
+    "partId": "c3d4e5f6-a7b8-4c9d-8e0f-1a2b3c4d5e6f",
     "partNumber": "SKF-6204",
     "name": "Ball Bearing 6204",
     "unit": "each",
-    "cost": 75.50
+    "cost": 75.5
   },
   "inventory": [
     {
-      "partId": "part-001",
+      "inventoryId": "e5f6a7b8-c9d0-4e1f-8a2b-3c4d5e6f7a8b",
+      "partId": "c3d4e5f6-a7b8-4c9d-8e0f-1a2b3c4d5e6f",
       "site": "main-facility",
       "tenantId": "tenant-123",
       "quantity": 15,
       "minStockLevel": 5,
       "maxStockLevel": 50,
-      "createdAt": "2024-01-15T10:30:00Z",
-      "updatedAt": "2024-10-10T14:30:00Z"
+      "createdAt": "2024-01-15T10:30:00",
+      "updatedAt": "2024-10-10T14:30:00"
     },
     {
-      "partId": "part-001",
+      "inventoryId": "f6a7b8c9-d0e1-4f2a-9b3c-4d5e6f7a8b9c",
+      "partId": "c3d4e5f6-a7b8-4c9d-8e0f-1a2b3c4d5e6f",
       "site": "warehouse-2",
       "tenantId": "tenant-123",
       "quantity": 8,
       "minStockLevel": 3,
       "maxStockLevel": 25,
-      "createdAt": "2024-02-01T10:30:00Z",
-      "updatedAt": "2024-10-05T14:30:00Z"
+      "createdAt": "2024-02-01T10:30:00",
+      "updatedAt": "2024-10-05T14:30:00"
     }
   ]
 }
 ```
 
-## Update Part Inventory
+## Set Part Inventory
 
-Updates inventory information for a specific part.
+Sets the stock row for a part at a site. This is how you set an opening quantity.
 
 **Endpoint:** `PUT /rcm/inventory/{partId}`
 
 **Authentication:** Required
 
 **Path Parameters:**
-- `partId`: Unique identifier of the part
+- `partId`: Unique identifier of the part. Must exist (404 otherwise).
+
+**Body:**
+
+| Field | Type | Notes |
+|-------|------|-------|
+| `site` | string | **Required.** |
+| `quantity` | number | The absolute quantity at the site. Required when the row does not exist yet. |
+| `minStockLevel` | number | Optional. |
+| `maxStockLevel` | number | Optional. |
+| `locationName` | string | Optional. Keeps stock at one bin within the site. |
+| `reason` | string | Optional. Recorded in the history row. Default `Manual set`. |
+| `metadata` | object | Optional. Recorded in the history row. |
+
+At least one of `quantity`, `minStockLevel`, `maxStockLevel` must be sent. Only the fields you send change. Numbers may be sent as numbers or numeric strings.
 
 **Request Body:**
 ```json
 {
-  "currentStock": 20,
-  "minimumStock": 8,
-  "maximumStock": 60,
-  "reorderPoint": 12,
-  "location": "A1-B3-C2",
-  "unitCost": 78.00,
-  "reason": "Physical count adjustment",
-  "notes": "Updated after physical inventory count"
+  "site": "main-facility",
+  "quantity": 20,
+  "minStockLevel": 8,
+  "maxStockLevel": 60,
+  "reason": "Physical count"
 }
 ```
 
-**Response:**
+**Response:** the row as now stored.
 ```json
 {
-  "partId": "part-001",
-  "partNumber": "SKF-6204",
-  "partName": "Ball Bearing 6204",
-  "currentStock": 20,
-  "availableStock": 17,
-  "reservedStock": 3,
-  "minimumStock": 8,
-  "maximumStock": 60,
-  "reorderPoint": 12,
-  "unitCost": 78.00,
-  "totalValue": 1560.00,
-  "location": "A1-B3-C2",
-  "stockStatus": "adequate",
-  "adjustmentReason": "Physical count adjustment",
-  "updatedAt": "2024-10-15T16:20:00Z"
+  "inventoryId": "e5f6a7b8-c9d0-4e1f-8a2b-3c4d5e6f7a8b",
+  "partId": "c3d4e5f6-a7b8-4c9d-8e0f-1a2b3c4d5e6f",
+  "site": "main-facility",
+  "tenantId": "tenant-123",
+  "quantity": 20,
+  "minStockLevel": 8,
+  "maxStockLevel": 60,
+  "createdAt": "2024-01-15T10:30:00",
+  "updatedAt": "2024-10-15T16:20:00"
 }
 ```
 
-## Delete Inventory Record
+A quantity change writes a history row of type `manual_set`.
 
-Removes an inventory record (sets stock to zero).
+## Delete Inventory Row
 
 **Endpoint:** `DELETE /rcm/inventory/{partId}`
 
 **Authentication:** Required
 
-**Path Parameters:**
-- `partId`: Unique identifier of the part
+The path value is tried as an `inventoryId` first. If it is a `partId`, add `?site=` (and `locationName` if the row is at a bin) to say which row.
 
 **Response:**
 ```json
 {
-  "message": "Inventory record deleted successfully",
-  "finalStock": 0,
-  "deletedAt": "2024-10-15T16:30:00Z"
+  "message": "Inventory record with ID e5f6a7b8-c9d0-4e1f-8a2b-3c4d5e6f7a8b successfully deleted",
+  "inventoryId": "e5f6a7b8-c9d0-4e1f-8a2b-3c4d5e6f7a8b",
+  "partId": "c3d4e5f6-a7b8-4c9d-8e0f-1a2b3c4d5e6f",
+  "site": "main-facility"
 }
 ```
 
 ## Get Inventory History
-
-Retrieves the movement history for a specific part.
 
 **Endpoint:** `GET /rcm/inventory/{partId}/history`
 
@@ -205,241 +231,142 @@ Retrieves the movement history for a specific part.
 - `partId`: Unique identifier of the part
 
 **Query Parameters:**
-- `limit` (optional): Maximum number of history records to return
-- `offset` (optional): Number of records to skip for pagination
-- `startDate` (optional): Filter movements after this date (ISO 8601)
-- `endDate` (optional): Filter movements before this date (ISO 8601)
-- `movementType` (optional): Filter by movement type
+- `site` (optional): one site's history
+
+Every history row for the part, newest first. There is no pagination or date filter.
 
 **Response:**
 ```json
 {
-  "partId": "part-001",
-  "partNumber": "SKF-6204",
-  "partName": "Ball Bearing 6204",
-  "movements": [
+  "part": {
+    "partId": "c3d4e5f6-a7b8-4c9d-8e0f-1a2b3c4d5e6f",
+    "partNumber": "SKF-6204",
+    "name": "Ball Bearing 6204",
+    "unit": "each"
+  },
+  "history": [
     {
-      "id": "movement-001",
-      "type": "issue",
+      "historyId": "a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d",
+      "partId": "c3d4e5f6-a7b8-4c9d-8e0f-1a2b3c4d5e6f",
+      "tenantId": "tenant-123",
+      "site": "main-facility",
+      "timestamp": "2024-10-10T14:30:00",
+      "type": "work_order_usage",
       "quantity": -2,
-      "previousBalance": 17,
-      "newBalance": 15,
-      "unitCost": 75.50,
-      "totalValue": -151.00,
-      "reason": "Work Order WO-2024-001",
-      "reference": "wo-001",
-      "performedBy": "tech-001",
-      "performedByName": "John Smith",
-      "performedAt": "2024-10-10T14:30:00Z",
-      "notes": "Used for pump bearing replacement"
+      "previousQuantity": 17,
+      "newQuantity": 15,
+      "reason": "Used on work order 3f6c0d4e-7a2b-4c9d-8e1f-2a3b4c5d6e7f",
+      "createdBy": "john.smith@example.com"
     },
     {
-      "id": "movement-002",
-      "type": "receipt",
-      "quantity": 25,
-      "previousBalance": -8,
-      "newBalance": 17,
-      "unitCost": 75.50,
-      "totalValue": 1887.50,
-      "reason": "Purchase Order PO-2024-005",
-      "reference": "po-005",
-      "performedBy": "user-002",
-      "performedByName": "Sarah Johnson",
-      "performedAt": "2024-09-15T09:00:00Z",
-      "notes": "Regular stock replenishment"
+      "historyId": "b2c3d4e5-f6a7-4b8c-9d0e-1f2a3b4c5d6e",
+      "partId": "c3d4e5f6-a7b8-4c9d-8e0f-1a2b3c4d5e6f",
+      "tenantId": "tenant-123",
+      "site": "main-facility",
+      "timestamp": "2024-09-15T09:00:00",
+      "type": "manual_set",
+      "quantity": 17,
+      "previousQuantity": 0,
+      "newQuantity": 17,
+      "reason": "Opening stock from legacy system",
+      "createdBy": "import@example.com"
     }
-  ],
-  "pagination": {
-    "total": 25,
-    "limit": 20,
-    "offset": 0,
-    "hasMore": true
-  }
+  ]
 }
 ```
 
 ## Make Inventory Adjustment
 
-Creates an inventory adjustment entry.
+Adds or removes a quantity. Use this for receipts, issues and count corrections. Use `PUT` when you want to set the absolute quantity instead.
 
 **Endpoint:** `POST /rcm/inventory/{partId}/adjustments`
 
 **Authentication:** Required
 
 **Path Parameters:**
-- `partId`: Unique identifier of the part
+- `partId`: Unique identifier of the part. Must exist (404 otherwise).
+
+**Body:**
+
+| Field | Type | Notes |
+|-------|------|-------|
+| `site` | string | **Required.** |
+| `quantityChange` | number | **Required.** Positive to add, negative to remove. Zero is rejected. |
+| `reason` | string | Optional. Default `Inventory adjustment`. |
+| `type` | string | Optional. Recorded on the history row. Default `manual`. |
+| `allowNegative` | boolean | Optional. Default `false`: a change that would take stock below zero is rejected with 400. |
+| `minStockLevel`, `maxStockLevel` | number | Optional. Set at the same time. |
+| `locationName` | string | Optional. Adjust one bin within the site. The row is created if it does not exist. |
+| `locationId` | string | Optional. The `inventoryId` of a bin row, instead of `locationName`. |
 
 **Request Body:**
 ```json
 {
-  "adjustmentType": "count",
-  "quantity": 3,
-  "reason": "Physical inventory count variance",
-  "notes": "Found 3 additional units during cycle count",
-  "unitCost": 75.50,
-  "location": "A1-B2-C3"
+  "site": "main-facility",
+  "quantityChange": 3,
+  "reason": "Cycle count variance",
+  "type": "count"
 }
 ```
 
 **Response:**
 ```json
 {
-  "adjustmentId": "adj-001",
-  "partId": "part-001",
-  "adjustmentType": "count",
-  "quantity": 3,
-  "previousBalance": 15,
-  "newBalance": 18,
-  "unitCost": 75.50,
-  "totalValue": 226.50,
-  "reason": "Physical inventory count variance",
-  "notes": "Found 3 additional units during cycle count",
-  "performedBy": "user-003",
-  "performedAt": "2024-10-15T10:30:00Z",
-  "approved": false,
-  "approvedBy": null,
-  "approvedAt": null
+  "adjustment": {
+    "historyId": "c3d4e5f6-a7b8-4c9d-8e0f-1a2b3c4d5e6f",
+    "partId": "c3d4e5f6-a7b8-4c9d-8e0f-1a2b3c4d5e6f",
+    "site": "main-facility",
+    "tenantId": "tenant-123",
+    "timestamp": "2024-10-15T10:30:00",
+    "type": "count",
+    "quantity": 3,
+    "reason": "Cycle count variance",
+    "previousQuantity": 15,
+    "newQuantity": 18,
+    "createdBy": "user@example.com"
+  },
+  "inventory": {
+    "inventoryId": "e5f6a7b8-c9d0-4e1f-8a2b-3c4d5e6f7a8b",
+    "partId": "c3d4e5f6-a7b8-4c9d-8e0f-1a2b3c4d5e6f",
+    "site": "main-facility",
+    "tenantId": "tenant-123",
+    "quantity": 18,
+    "minStockLevel": 5,
+    "maxStockLevel": 50,
+    "createdAt": "2024-01-15T10:30:00",
+    "updatedAt": "2024-10-15T10:30:00"
+  }
 }
 ```
 
 ## Get Inventory Reports
-
-Generates various inventory reports and analytics.
 
 **Endpoint:** `GET /rcm/inventory/reports`
 
 **Authentication:** Required
 
 **Query Parameters:**
-- `reportType` (required): Type of report (summary, movements, abc_analysis, turnover, aging)
-- `startDate` (optional): Report start date (ISO 8601)
-- `endDate` (optional): Report end date (ISO 8601)
-- `category` (optional): Filter by part category
-- `location` (optional): Filter by storage location
+- `type` (optional): `valuation` (the default) or `low_stock`
+- `site` (optional): limit the report to one site
 
-**Report Types:**
-
-### Summary Report
-```json
-{
-  "reportType": "summary",
-  "generatedAt": "2024-10-15T10:30:00Z",
-  "summary": {
-    "totalParts": 500,
-    "totalValue": 125000.00,
-    "totalMovements": 1250,
-    "averageTurnover": 2.1
-  },
-  "stockStatus": {
-    "adequate": 450,
-    "lowStock": 35,
-    "outOfStock": 10,
-    "excessStock": 5
-  },
-  "categoryBreakdown": [
-    {
-      "category": "Bearings",
-      "partCount": 150,
-      "totalValue": 45000.00,
-      "percentage": 36.0
-    }
-  ]
-}
-```
-
-### ABC Analysis Report
-```json
-{
-  "reportType": "abc_analysis",
-  "generatedAt": "2024-10-15T10:30:00Z",
-  "analysis": {
-    "classA": {
-      "partCount": 100,
-      "valuePercentage": 80.0,
-      "totalValue": 100000.00
-    },
-    "classB": {
-      "partCount": 200,
-      "valuePercentage": 15.0,
-      "totalValue": 18750.00
-    },
-    "classC": {
-      "partCount": 200,
-      "valuePercentage": 5.0,
-      "totalValue": 6250.00
-    }
-  },
-  "parts": [
-    {
-      "partId": "part-001",
-      "partNumber": "SKF-6204",
-      "class": "A",
-      "annualUsageValue": 15000.00,
-      "percentage": 12.0
-    }
-  ]
-}
-```
-
-## Movement Types
-
-Inventory movement types:
-
-- **receipt**: Stock received from suppliers
-- **issue**: Stock issued for work orders
-- **adjustment**: Manual stock adjustments
-- **transfer**: Stock transferred between locations
-- **return**: Stock returned from work orders
-- **cycle_count**: Cycle count adjustments
-- **write_off**: Stock written off/damaged
-- **reserve**: Stock reserved for future use
-- **unreserve**: Stock reservation released
-
-## Adjustment Types
-
-Types of inventory adjustments:
-
-- **count**: Physical count variance
-- **damage**: Damaged goods write-off
-- **loss**: Lost or stolen items
-- **correction**: Data entry corrections
-- **expiry**: Expired items removal
-- **quality**: Quality-related adjustments
-
-## Stock Status Values
-
-- **adequate**: Stock level is sufficient
-- **low**: Stock level below reorder point
-- **critical**: Stock level below minimum
-- **out**: Zero stock
-- **excess**: Stock level above maximum
+Any other `type` is rejected with 400.
 
 ## Error Responses
+
+Errors carry a single `message` field.
 
 ### 400 Bad Request
 ```json
 {
-  "error": "Invalid inventory data",
-  "details": {
-    "quantity": "Quantity must be a number",
-    "adjustmentType": "Invalid adjustment type"
-  }
+  "message": "Provide at least one of quantity, minStockLevel, maxStockLevel"
 }
 ```
+Other 400 messages: `Site is required`, `quantity must be a number, got 'ten'`, `Quantity change cannot be zero`, `Insufficient inventory. Current: 2, Requested change: -5`, `Cannot create inventory with negative quantity`.
 
 ### 404 Not Found
 ```json
 {
-  "error": "Inventory record not found",
-  "partId": "part-001"
+  "message": "Part with ID part-999 not found"
 }
 ```
-
-### 409 Conflict
-```json
-{
-  "error": "Insufficient stock",
-  "available": 5,
-  "requested": 10
-}
-```
+Also `No inventory found for part {partId} at site {site}` on a read, and `No inventory for part {partId} at {site}; provide quantity to create it` when a PUT sends only stock levels for a row that does not exist.

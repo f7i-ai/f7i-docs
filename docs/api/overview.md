@@ -81,15 +81,41 @@ The API uses standard HTTP status codes:
 - **404**: Not Found - Resource doesn't exist
 - **500**: Internal Server Error
 
-Error responses include a JSON object with error details:
+Error responses are a JSON object with a `message`:
 
 ```json
 {
-  "error": "Error message description",
-  "code": "ERROR_CODE",
-  "timestamp": "2024-01-01T00:00:00Z"
+  "message": "Asset with ID asset-999 not found"
 }
 ```
+
+Validation errors on routes with a typed body (components, parts) add a `details` list, one entry per bad field:
+
+```json
+{
+  "message": "Validation failed",
+  "details": [
+    { "field": "unit", "message": "Field required", "code": "missing" }
+  ]
+}
+```
+
+:::note Available from the next API release
+The `details` list is new. Today those routes answer a validation failure with a single `message`, or in some cases a 502 from the gateway.
+:::
+
+Server errors (5xx) always answer `{"message": "Internal server error"}`. The detail stays in our logs.
+
+### Routes that answer `403 Invalid key=value pair`
+
+If a call answers 403 with a message like `Invalid key=value pair (found: ...) in Authorization header`, the **path does not exist** on the gateway. That text comes from API Gateway, not from our API, and it is not a problem with your key. Check the path against the resource pages. In particular, these paths do not exist:
+
+- `/rcm/schedules` (there is no schedules API; see [PM scheduling](#pm-scheduling))
+- `/rcm/failure-modes`, `/rcm/fmea` and `/rcm/failure-codes` (the resource is [`/rcm/failurecodes`](./failure-codes.md))
+
+### PM scheduling
+
+There is no schedules API, and the PM procedure form has no next-due date. A procedure records its `frequency`; the API does not raise work orders on a timer. PM work orders are raised with `POST /rcm/work-orders` carrying `pmProcedureId`. See [PM Procedures](./pm-procedures.md) and [Create a work order from a PM procedure](./work-orders.md#create-a-work-order-from-a-pm-procedure).
 
 ## Rate Limiting
 

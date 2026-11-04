@@ -41,7 +41,7 @@ Retrieves a list of all part orders.
 {
   "partOrders": [
     {
-      "id": "po-001",
+      "orderId": "po-001",
       "orderNumber": "PO-2024-001",
       "status": "pending",
       "priority": "normal",
@@ -147,7 +147,7 @@ Creates a new part order.
 **Response:**
 ```json
 {
-  "id": "po-002",
+  "orderId": "po-002",
   "orderNumber": "PO-2024-002",
   "status": "draft",
   "priority": "urgent",
@@ -218,7 +218,7 @@ Retrieves details of a specific part order.
 **Response:**
 ```json
 {
-  "id": "po-001",
+  "orderId": "po-001",
   "orderNumber": "PO-2024-001",
   "status": "received",
   "priority": "normal",
@@ -349,7 +349,7 @@ Updates an existing part order.
 **Response:**
 ```json
 {
-  "id": "po-002",
+  "orderId": "po-002",
   "orderNumber": "PO-2024-002",
   "status": "draft",
   "priority": "high",
@@ -399,7 +399,7 @@ Updates the status of a part order.
 **Response:**
 ```json
 {
-  "id": "po-002",
+  "orderId": "po-002",
   "orderNumber": "PO-2024-002",
   "status": "approved",
   "approvedBy": "user-002",
