@@ -6,488 +6,330 @@ sidebar_position: 6
 
 **Service:** `rcm` (Prevent). All paths on this page start with `/rcm`, so the base is `https://api-<your-subdomain>.f7i.ai/rcm`.
 
-The PM Procedures API provides endpoints for managing Preventive Maintenance procedures and creating work orders from them.
+A PM procedure is a piece of preventive maintenance that is done on one component of an asset, on a set frequency. It records what the work is, how often it is due, and the skills, tools and safety precautions it needs.
+
+The steps a technician follows can live in two places:
+
+- **On the procedure itself**, in the `steps` field. This is the original model.
+- **In a [job plan](./job-plans.md)**, linked by `jobPlanId`. A job plan is a reusable, versioned step list from the Job Plan Library. When a work order is raised from the procedure, the job plan's steps become the work order's tasks and its tools, skills, parts, permits and crafts fill in the work order. One job plan can serve many procedures.
+
+## How the pieces fit together
+
+```
+Asset
+ └── Component                  POST /rcm/components
+      └── PM procedure          POST /rcm/pms   (componentId, optional jobPlanId)
+           └── Work order       POST /rcm/work-orders   (pmProcedureId)
+                └── Tasks       GET  /rcm/work-orders/{workOrderId}/tasks
+```
+
+- A procedure belongs to a **component**, not directly to an asset. The procedure's `assetId` is copied from the component.
+- A procedure can point at a **maintenance strategy** (`strategyId`) and a **job plan** (`jobPlanId`).
+- Work orders are raised with the [Work Orders API](./work-orders.md#create-a-work-order-from-a-pm-procedure). There is no separate "create work order" call on the procedure.
+- `frequency` is recorded on the procedure. The API does not generate work orders on a timer; your integration (or a person in the app) raises each work order.
+
+## Create a PM procedure for an asset, step by step
+
+1. **Find the component.** List the asset's components with `GET /rcm/components?assetId={assetId}`. If the asset has none yet, create one with `POST /rcm/components` (see [Components](./components.md)). Keep the `componentId`.
+2. **Decide where the steps live.** Either put them in the procedure's `steps` field, or create a job plan with `POST /rcm/job-plans` (see [Job Plans](./job-plans.md)) and keep its `jobPlanId`. You can do both: the procedure's own `steps` are the fallback if the job plan is ever deleted.
+3. **Create the procedure** with `POST /rcm/pms` (below).
+4. **Raise work orders** with `POST /rcm/work-orders`, passing `pmProcedureId`.
 
 ## Endpoints Overview
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| GET | `/rcm/pms` | List all PM procedures |
-| POST | `/rcm/pms` | Create a new PM procedure |
-| GET | `/rcm/pms/{pmId}` | Get a specific PM procedure |
+| GET | `/rcm/pms` | List PM procedures |
+| POST | `/rcm/pms` | Create a PM procedure |
+| GET | `/rcm/pms/{pmId}` | Get a PM procedure with its related records |
 | PUT | `/rcm/pms/{pmId}` | Update a PM procedure |
 | DELETE | `/rcm/pms/{pmId}` | Delete a PM procedure |
-| POST | `/rcm/pms/{pmId}/createworkorder` | Create work order from PM |
 
 ## List PM Procedures
-
-Retrieves a list of all PM procedures.
 
 **Endpoint:** `GET /rcm/pms`
 
 **Authentication:** Required
 
-**Query Parameters:**
-- `limit` (optional): Maximum number of PM procedures to return
-- `offset` (optional): Number of PM procedures to skip for pagination
-- `search` (optional): Search term to filter PM procedures
-- `assetId` (optional): Filter by asset ID
-- `frequency` (optional): Filter by maintenance frequency
-- `status` (optional): Filter by procedure status
+**Query Parameters** (at most one is applied, in this order of precedence):
+- `strategyId` (optional): Only procedures on this maintenance strategy
+- `componentId` (optional): Only procedures on this component
+- `assetId` (optional): Only procedures on this asset
 
-**Response:**
+With no parameters, every procedure in your tenant is returned. There is no paging, search or status filter.
+
+**Response:** a JSON array of procedures.
 ```json
-{
-  "pmProcedures": [
-    {
-      "id": "pm-001",
-      "name": "Monthly Pump Inspection",
-      "description": "Monthly inspection and maintenance of centrifugal pumps",
-      "assetId": "asset-123",
-      "assetName": "Pump A1",
-      "frequency": "monthly",
-      "estimatedDuration": 2,
-      "priority": "medium",
-      "status": "active",
-      "steps": [
-        {
-          "order": 1,
-          "description": "Visual inspection of pump body",
-          "estimatedTime": 15,
-          "tools": ["flashlight", "inspection_mirror"]
-        },
-        {
-          "order": 2,
-          "description": "Check bearing lubrication",
-          "estimatedTime": 30,
-          "tools": ["grease_gun", "lubricant"]
-        }
-      ],
-      "requiredSkills": ["mechanical", "lubrication"],
-      "safetyRequirements": ["ppe", "lockout_tagout"],
-      "parts": [
-        {
-          "partId": "part-001",
-          "quantity": 1,
-          "isOptional": true
-        }
-      ],
-      "lastExecuted": "2024-09-15T00:00:00Z",
-      "nextDue": "2024-11-15T00:00:00Z",
-      "createdAt": "2024-01-15T10:30:00Z",
-      "updatedAt": "2024-10-01T14:45:00Z"
-    }
-  ],
-  "pagination": {
-    "total": 75,
-    "limit": 20,
-    "offset": 0,
-    "hasMore": true
+[
+  {
+    "pmId": "4d2c7a5e-8f1b-4c3a-9e6d-1a2b3c4d5e6f",
+    "componentId": "comp-123",
+    "assetId": "asset-456",
+    "code": "PP-001",
+    "name": "Monthly pump inspection",
+    "title": "Monthly inspection of centrifugal pump",
+    "description": "Visual and lubrication check of the pump and its drive",
+    "type": "preventive",
+    "frequency": "monthly",
+    "duration": "2h",
+    "requiredSkills": ["mechanical"],
+    "requiredTools": ["torch", "grease gun"],
+    "steps": [
+      "Isolate and lock out the pump",
+      "Inspect the pump body and seals for leaks",
+      "Check bearing lubrication"
+    ],
+    "safetyPrecautions": ["LOTO", "PPE"],
+    "strategyId": "strat-789",
+    "jobPlanId": "jp-001",
+    "createdAt": "2026-10-01T10:30:00",
+    "updatedAt": "2026-10-01T10:30:00"
   }
-}
+]
 ```
 
 **Example Request:**
 ```bash
-curl -X GET "https://api-acme.f7i.ai/rcm/pms?frequency=monthly" \
+curl -X GET "https://api-acme.f7i.ai/rcm/pms?assetId=asset-456" \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json"
 ```
 
 ## Create PM Procedure
 
-Creates a new PM procedure.
-
 **Endpoint:** `POST /rcm/pms`
 
 **Authentication:** Required
 
+**Required fields.** Every one of these must be present and non-empty. An empty string or empty array counts as missing.
+
+| Field | Type | Notes |
+|-------|------|-------|
+| `componentId` | string | The component the procedure is done on. Must exist in your tenant. The procedure's `assetId` is taken from it. |
+| `code` | string | A short identifier, for example `PP-001`. |
+| `name` | string | Short name shown in lists. |
+| `title` | string | Longer title shown on the procedure. |
+| `description` | string | What the procedure covers. |
+| `type` | string | The app offers `preventive`, `corrective`, `predictive` and `condition-based`. |
+| `frequency` | string | The app offers `daily`, `weekly`, `monthly`, `quarterly`, `annually` and `as-needed`. Stored as given. |
+| `duration` | string | Estimated time, for example `"2h"` or `"90m"`. The app reads a bare number as hours. |
+| `requiredSkills` | string[] | At least one skill. |
+| `requiredTools` | string[] | At least one tool. |
+| `steps` | string[] | The steps in order, one string per step. If the procedure uses a job plan, the job plan's steps are used for work orders and these are the fallback. |
+| `safetyPrecautions` | string[] | At least one precaution. |
+
+**Optional fields:**
+
+| Field | Type | Notes |
+|-------|------|-------|
+| `jobPlanId` | string | A job plan from the [Job Plan Library](./job-plans.md). Must exist, or the request is rejected with 400. |
+| `jobPlanVersion` | integer | Pin the procedure to one version of the job plan. Leave it out to follow the job plan's active version. |
+| `strategyId` | string | A maintenance strategy. Must exist, or the request is rejected with 400. |
+| `metadata` | object | Free-form data of your own. |
+
 **Request Body:**
 ```json
 {
-  "name": "Quarterly Motor Maintenance",
-  "description": "Comprehensive quarterly maintenance for electric motors",
-  "assetId": "asset-456",
-  "frequency": "quarterly",
-  "estimatedDuration": 4,
-  "priority": "high",
+  "componentId": "comp-123",
+  "code": "PP-001",
+  "name": "Monthly pump inspection",
+  "title": "Monthly inspection of centrifugal pump",
+  "description": "Visual and lubrication check of the pump and its drive",
+  "type": "preventive",
+  "frequency": "monthly",
+  "duration": "2h",
+  "requiredSkills": ["mechanical"],
+  "requiredTools": ["torch", "grease gun"],
   "steps": [
-    {
-      "order": 1,
-      "description": "Power isolation and lockout",
-      "estimatedTime": 15,
-      "tools": ["lockout_kit"],
-      "safetyNote": "Ensure complete electrical isolation"
-    },
-    {
-      "order": 2,
-      "description": "Visual inspection of motor housing",
-      "estimatedTime": 20,
-      "tools": ["flashlight", "inspection_mirror"]
-    },
-    {
-      "order": 3,
-      "description": "Check and replace air filter",
-      "estimatedTime": 30,
-      "tools": ["screwdriver", "replacement_filter"],
-      "parts": [
-        {
-          "partId": "part-filter-001",
-          "quantity": 1
-        }
-      ]
-    }
+    "Isolate and lock out the pump",
+    "Inspect the pump body and seals for leaks",
+    "Check bearing lubrication"
   ],
-  "requiredSkills": ["electrical", "mechanical"],
-  "safetyRequirements": ["ppe", "electrical_safety", "lockout_tagout"],
-  "parts": [
-    {
-      "partId": "part-filter-001",
-      "quantity": 1,
-      "isOptional": false
-    },
-    {
-      "partId": "part-lubricant-001",
-      "quantity": 1,
-      "isOptional": true
-    }
-  ],
-  "schedulingRules": {
-    "preferredDay": "friday",
-    "avoidWeekends": true,
-    "leadTime": 7
-  }
+  "safetyPrecautions": ["LOTO", "PPE"],
+  "jobPlanId": "jp-001"
 }
 ```
 
-**Response:**
+**Response:** `200 OK` with the stored procedure. `pmId`, `assetId`, `createdAt` and `updatedAt` are filled in by the API.
 ```json
 {
-  "id": "pm-002",
-  "name": "Quarterly Motor Maintenance",
-  "description": "Comprehensive quarterly maintenance for electric motors",
+  "pmId": "4d2c7a5e-8f1b-4c3a-9e6d-1a2b3c4d5e6f",
+  "componentId": "comp-123",
   "assetId": "asset-456",
-  "assetName": "Motor B2",
-  "frequency": "quarterly",
-  "estimatedDuration": 4,
-  "priority": "high",
-  "status": "active",
+  "code": "PP-001",
+  "name": "Monthly pump inspection",
+  "title": "Monthly inspection of centrifugal pump",
+  "description": "Visual and lubrication check of the pump and its drive",
+  "type": "preventive",
+  "frequency": "monthly",
+  "duration": "2h",
+  "requiredSkills": ["mechanical"],
+  "requiredTools": ["torch", "grease gun"],
   "steps": [
-    {
-      "order": 1,
-      "description": "Power isolation and lockout",
-      "estimatedTime": 15,
-      "tools": ["lockout_kit"],
-      "safetyNote": "Ensure complete electrical isolation"
-    },
-    {
-      "order": 2,
-      "description": "Visual inspection of motor housing",
-      "estimatedTime": 20,
-      "tools": ["flashlight", "inspection_mirror"]
-    },
-    {
-      "order": 3,
-      "description": "Check and replace air filter",
-      "estimatedTime": 30,
-      "tools": ["screwdriver", "replacement_filter"],
-      "parts": [
-        {
-          "partId": "part-filter-001",
-          "quantity": 1
-        }
-      ]
-    }
+    "Isolate and lock out the pump",
+    "Inspect the pump body and seals for leaks",
+    "Check bearing lubrication"
   ],
-  "requiredSkills": ["electrical", "mechanical"],
-  "safetyRequirements": ["ppe", "electrical_safety", "lockout_tagout"],
-  "parts": [
-    {
-      "partId": "part-filter-001",
-      "quantity": 1,
-      "isOptional": false
-    },
-    {
-      "partId": "part-lubricant-001",
-      "quantity": 1,
-      "isOptional": true
-    }
-  ],
-  "schedulingRules": {
-    "preferredDay": "friday",
-    "avoidWeekends": true,
-    "leadTime": 7
-  },
-  "nextDue": "2025-01-15T00:00:00Z",
-  "createdAt": "2024-10-15T10:30:00Z",
-  "updatedAt": "2024-10-15T10:30:00Z"
+  "safetyPrecautions": ["LOTO", "PPE"],
+  "jobPlanId": "jp-001",
+  "createdAt": "2026-10-01T10:30:00",
+  "updatedAt": "2026-10-01T10:30:00"
 }
+```
+
+**Example Request:**
+```bash
+curl -X POST "https://api-acme.f7i.ai/rcm/pms" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "componentId": "comp-123",
+    "code": "PP-001",
+    "name": "Monthly pump inspection",
+    "title": "Monthly inspection of centrifugal pump",
+    "description": "Visual and lubrication check of the pump and its drive",
+    "type": "preventive",
+    "frequency": "monthly",
+    "duration": "2h",
+    "requiredSkills": ["mechanical"],
+    "requiredTools": ["torch", "grease gun"],
+    "steps": ["Isolate and lock out the pump", "Inspect the pump body and seals for leaks", "Check bearing lubrication"],
+    "safetyPrecautions": ["LOTO", "PPE"],
+    "jobPlanId": "jp-001"
+  }'
 ```
 
 ## Get PM Procedure
-
-Retrieves details of a specific PM procedure.
 
 **Endpoint:** `GET /rcm/pms/{pmId}`
 
 **Authentication:** Required
 
 **Path Parameters:**
-- `pmId`: Unique identifier of the PM procedure
+- `pmId`: The procedure's id
 
-**Response:**
+**Response:** the procedure, plus the related records where they exist: `strategy`, `component` and `asset`. The linked job plan is not embedded; fetch it with `GET /rcm/job-plans/{jobPlanId}`.
 ```json
 {
-  "id": "pm-001",
-  "name": "Monthly Pump Inspection",
-  "description": "Monthly inspection and maintenance of centrifugal pumps",
-  "assetId": "asset-123",
-  "assetName": "Pump A1",
+  "pmId": "4d2c7a5e-8f1b-4c3a-9e6d-1a2b3c4d5e6f",
+  "componentId": "comp-123",
+  "assetId": "asset-456",
+  "code": "PP-001",
+  "name": "Monthly pump inspection",
+  "title": "Monthly inspection of centrifugal pump",
+  "description": "Visual and lubrication check of the pump and its drive",
+  "type": "preventive",
   "frequency": "monthly",
-  "estimatedDuration": 2,
-  "priority": "medium",
-  "status": "active",
-  "steps": [
-    {
-      "order": 1,
-      "description": "Visual inspection of pump body",
-      "estimatedTime": 15,
-      "tools": ["flashlight", "inspection_mirror"],
-      "checkpoints": [
-        "Check for leaks",
-        "Inspect for corrosion",
-        "Verify mounting bolts"
-      ]
-    }
-  ],
-  "requiredSkills": ["mechanical", "lubrication"],
-  "safetyRequirements": ["ppe", "lockout_tagout"],
-  "parts": [
-    {
-      "partId": "part-001",
-      "partName": "Pump Seal",
-      "quantity": 1,
-      "isOptional": true
-    }
-  ],
-  "history": [
-    {
-      "workOrderId": "wo-001",
-      "executedDate": "2024-09-15T00:00:00Z",
-      "duration": 2.5,
-      "technician": "John Smith",
-      "status": "completed"
-    }
-  ],
-  "performance": {
-    "averageDuration": 2.2,
-    "completionRate": 95,
-    "averageCost": 150
-  },
-  "lastExecuted": "2024-09-15T00:00:00Z",
-  "nextDue": "2024-11-15T00:00:00Z",
-  "createdAt": "2024-01-15T10:30:00Z",
-  "updatedAt": "2024-10-01T14:45:00Z"
+  "duration": "2h",
+  "requiredSkills": ["mechanical"],
+  "requiredTools": ["torch", "grease gun"],
+  "steps": ["Isolate and lock out the pump", "Inspect the pump body and seals for leaks", "Check bearing lubrication"],
+  "safetyPrecautions": ["LOTO", "PPE"],
+  "strategyId": "strat-789",
+  "jobPlanId": "jp-001",
+  "createdAt": "2026-10-01T10:30:00",
+  "updatedAt": "2026-10-01T10:30:00",
+  "strategy": { "strategyId": "strat-789", "name": "Time-based PM", "frequency": "1m" },
+  "component": { "componentId": "comp-123", "name": "Pump", "assetId": "asset-456" },
+  "asset": { "assetId": "asset-456", "name": "Pump A1", "site": "Main plant" }
 }
 ```
 
 ## Update PM Procedure
-
-Updates an existing PM procedure.
 
 **Endpoint:** `PUT /rcm/pms/{pmId}`
 
 **Authentication:** Required
 
 **Path Parameters:**
-- `pmId`: Unique identifier of the PM procedure
+- `pmId`: The procedure's id
+
+Send only the fields you want to change. Each field you send replaces the stored value outright, so to change one step send the whole `steps` array. `pmId`, `tenantId` and `createdAt` in the body are ignored.
+
+`componentId`, `assetId`, `strategyId` and `jobPlanId` are checked against your tenant when present; an unknown id is rejected with 400. To unlink a job plan, send `"jobPlanId": null`.
 
 **Request Body:**
 ```json
 {
-  "estimatedDuration": 3,
-  "priority": "high",
+  "frequency": "quarterly",
+  "duration": "3h",
   "steps": [
-    {
-      "order": 1,
-      "description": "Enhanced visual inspection of pump body",
-      "estimatedTime": 20,
-      "tools": ["flashlight", "inspection_mirror", "camera"]
-    },
-    {
-      "order": 2,
-      "description": "Check bearing lubrication and temperature",
-      "estimatedTime": 30,
-      "tools": ["grease_gun", "lubricant", "thermometer"]
-    },
-    {
-      "order": 3,
-      "description": "Vibration analysis",
-      "estimatedTime": 45,
-      "tools": ["vibration_analyzer"]
-    }
-  ]
+    "Isolate and lock out the pump",
+    "Inspect the pump body and seals for leaks",
+    "Check bearing lubrication and temperature",
+    "Record vibration readings"
+  ],
+  "jobPlanId": "jp-002"
 }
 ```
 
-## Delete PM Procedure
+**Response:** `200 OK` with the whole procedure as now stored.
 
-Deletes a PM procedure from the system.
+## Delete PM Procedure
 
 **Endpoint:** `DELETE /rcm/pms/{pmId}`
 
 **Authentication:** Required
 
 **Path Parameters:**
-- `pmId`: Unique identifier of the PM procedure
+- `pmId`: The procedure's id
+
+Deleting a procedure does not delete its job plan or any work orders already raised from it.
 
 **Response:**
 ```json
 {
-  "message": "PM procedure deleted successfully",
-  "deletedAt": "2024-10-15T16:30:00Z"
+  "message": "PM procedure 4d2c7a5e-8f1b-4c3a-9e6d-1a2b3c4d5e6f deleted successfully"
 }
 ```
 
-## Create Work Order from PM
+## Raise a work order from a PM procedure
 
-Creates a work order based on a PM procedure.
+Use the Work Orders API. Pass the procedure's id as `pmProcedureId`:
 
-**Endpoint:** `POST /rcm/pms/{pmId}/createworkorder`
-
-**Authentication:** Required
-
-**Path Parameters:**
-- `pmId`: Unique identifier of the PM procedure
-
-**Request Body:**
-```json
-{
-  "scheduledDate": "2024-11-15T09:00:00Z",
-  "assignedTechnician": "tech-001",
-  "priority": "medium",
-  "notes": "Regular monthly maintenance - no issues reported",
-  "customSteps": [
-    {
-      "order": 4,
-      "description": "Additional inspection of new components",
-      "estimatedTime": 15
-    }
-  ]
-}
+```bash
+curl -X POST "https://api-acme.f7i.ai/rcm/work-orders" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "title": "Monthly pump inspection - Pump A1",
+    "assetId": "asset-456",
+    "type": "preventive",
+    "priority": "medium",
+    "pmProcedureId": "4d2c7a5e-8f1b-4c3a-9e6d-1a2b3c4d5e6f"
+  }'
 ```
 
-**Response:**
-```json
-{
-  "workOrderId": "wo-003",
-  "pmId": "pm-001",
-  "assetId": "asset-123",
-  "title": "Monthly Pump Inspection - Pump A1",
-  "description": "Work order created from PM procedure: Monthly Pump Inspection",
-  "scheduledDate": "2024-11-15T09:00:00Z",
-  "assignedTechnician": "tech-001",
-  "priority": "medium",
-  "status": "scheduled",
-  "estimatedDuration": 2,
-  "steps": [
-    {
-      "order": 1,
-      "description": "Visual inspection of pump body",
-      "estimatedTime": 15,
-      "status": "pending"
-    },
-    {
-      "order": 2,
-      "description": "Check bearing lubrication",
-      "estimatedTime": 30,
-      "status": "pending"
-    },
-    {
-      "order": 4,
-      "description": "Additional inspection of new components",
-      "estimatedTime": 15,
-      "status": "pending"
-    }
-  ],
-  "requiredParts": [
-    {
-      "partId": "part-001",
-      "quantity": 1,
-      "status": "reserved"
-    }
-  ],
-  "createdAt": "2024-10-15T10:30:00Z"
-}
-```
+What happens:
 
-## PM Frequencies
+- The work order records `pmProcedureId` and the procedure's `strategyId`.
+- If the procedure has a `jobPlanId`, the job plan's active version (or the version pinned by `jobPlanVersion`) is copied onto the work order: each step becomes a task row (`GET /rcm/work-orders/{workOrderId}/tasks`), and `requiredTools`, `requiredSkills`, `parts`, `permits` and `crafts` are filled in unless your request body sets them. The copy is a snapshot, so later edits to the job plan do not change open work orders.
+- If the procedure has no job plan, the work order has no task rows. The procedure's own `steps`, tools and skills stay on the procedure for the technician to read.
 
-Available maintenance frequencies:
-
-- **daily**: Every day
-- **weekly**: Every week
-- **bi-weekly**: Every two weeks
-- **monthly**: Every month
-- **quarterly**: Every three months
-- **semi-annual**: Every six months
-- **annual**: Every year
-- **custom**: Custom interval in days
-
-## Priority Levels
-
-PM procedure priority levels:
-
-- **low**: Non-urgent maintenance
-- **medium**: Standard priority
-- **high**: Important maintenance
-- **critical**: Emergency or safety-critical
-
-## Status Values
-
-PM procedure status values:
-
-- **active**: Currently in use
-- **inactive**: Temporarily disabled
-- **draft**: Being developed
-- **archived**: No longer used
-
-## Safety Requirements
-
-Common safety requirements:
-
-- **ppe**: Personal Protective Equipment
-- **lockout_tagout**: LOTO procedures
-- **electrical_safety**: Electrical safety protocols
-- **confined_space**: Confined space entry
-- **hot_work**: Hot work permit required
-- **chemical_safety**: Chemical handling protocols
+See [Create a work order from a PM procedure](./work-orders.md#create-a-work-order-from-a-pm-procedure) for the full request shape.
 
 ## Error Responses
+
+Errors carry a single `message` field.
 
 ### 400 Bad Request
 ```json
 {
-  "error": "Invalid PM procedure data",
-  "details": {
-    "frequency": "Frequency must be a valid option",
-    "estimatedDuration": "Duration must be a positive number"
-  }
+  "message": "Missing required fields: componentId, safetyPrecautions"
 }
 ```
+Other 400 messages: `Component with ID comp-999 not found`, `Job plan with ID jp-999 not found`, `Strategy with ID strat-999 not found`, `Asset with ID asset-999 not found`, `jobPlanVersion must be an integer`.
 
 ### 404 Not Found
 ```json
 {
-  "error": "PM procedure not found",
-  "pmId": "pm-001"
+  "message": "PM procedure with ID pm-999 not found"
 }
 ```
 
-### 409 Conflict
+### 500 Internal Server Error
 ```json
 {
-  "error": "Cannot create work order",
-  "reason": "PM procedure already has a pending work order"
+  "message": "Internal server error"
 }
 ```
