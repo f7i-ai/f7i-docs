@@ -325,10 +325,6 @@ Corrective and Emergency work orders need a `failureCodeId`, or a `skipReason`, 
 
 **Response:** `200 OK` with the whole work order as now stored.
 
-:::note Available from the next API release
-Today this call ignores `createdAt` and `completedAt`. To correct the dates before the release is out, delete the work order and create it again with its dates.
-:::
-
 ### How do I correct the dates on a work order?
 
 With an API key, send `createdAt`, `completedAt` or both, as ISO 8601. Past dates are kept exactly as sent, and `updatedAt` still shows when you made the correction. A request made with a login token keeps ignoring both dates, which is how the app saves.
