@@ -143,8 +143,8 @@ curl -X GET "https://api-acme.f7i.ai/rcm/work-orders?assignedTo=all&status=in-pr
 | `status` | string | See [status values](#work-order-status-values). Default `Open`. |
 | `assignedTo` | string | The user id of the assignee. Leave it out for an unassigned work order (stored as `"unassigned"`). |
 | `assignedName` | string | Display name for the assignee. |
-| `dueDate` | string | ISO 8601. |
-| `scheduledStartTime` | string | ISO 8601. |
+| `dueDate` | string | ISO 8601. Must be in the future, unless you use an API key. |
+| `scheduledStartTime` | string | ISO 8601. Must be in the future, unless you use an API key. A past time reserves no tools. |
 | `estimatedDuration` | number | **Minutes.** `240` is four hours. |
 | `requiredSkills` | string[] | |
 | `requiredTools` | string[] | |
@@ -153,10 +153,14 @@ curl -X GET "https://api-acme.f7i.ai/rcm/work-orders?assignedTo=all&status=in-pr
 | `failureCodeId` | string | A [failure mode](./failure-codes.md) id. |
 | `conditionFound` | string | `as_expected`, `early_wear`, `failure_imminent`, `already_failed` or `no_access`. |
 | `createdAt` | string | ISO 8601. For imports: keeps the original raised date. Defaults to now. |
-| `completedAt` | string | ISO 8601. For imports: the original completion date. Needs a completed `status` and may not be before `createdAt`. |
+| `startedAt` | string | ISO 8601. API key only. For imports: when work began. MTTR is measured from this date. Needs a `status` of `in-progress`, `waiting-parts`, `completed` or `cancelled`, and may not be before `createdAt`. |
+| `completedAt` | string | ISO 8601. For imports: the original completion date. Needs a completed `status` and may not be before `createdAt` or `startedAt`. With an API key, a PM's strategy takes its Last Performed and Next Due from this date. |
+| `cancelledAt` | string | ISO 8601. API key only. For imports: the original cancellation date. Needs a cancelled `status` and may not be before `createdAt` or `startedAt`. |
 | `metadata` | object | Free-form data of your own. |
 | `customFields` | object | Free-form data of your own. |
 | `autoKitParts` | boolean | Default `true`. When a `componentId` is given, the component's parts are added to the work order. Send `false` to skip that. |
+
+**Loading completed PMs.** With an API key, a completed PM sent with `completedAt` moves its strategy's Last Performed and Next Due. Last Performed only ever moves forward, so the order of a load does not matter. Next Due is worked out from that date. If the latest completion you load is old, the strategy can show as overdue, and a Next Due set by hand can move earlier.
 
 **Request Body:**
 ```json
@@ -326,31 +330,47 @@ Corrective and Emergency work orders need a `failureCodeId`, or a `skipReason`, 
 **Response:** `200 OK` with the whole work order as now stored.
 
 :::note Available from the next API release
-Today this call ignores `createdAt` and `completedAt`. To correct the dates before the release is out, delete the work order and create it again with its dates.
+Today this call ignores `createdAt`, `startedAt`, `completedAt` and `cancelledAt`. To correct `createdAt` or `completedAt` before the release is out, delete the work order and create it again with its dates. `startedAt`, `cancelledAt` and past `dueDate` and `scheduledStartTime` values on create also arrive with the release.
 :::
 
 ### How do I correct the dates on a work order?
 
-With an API key, send `createdAt`, `completedAt` or both, as ISO 8601. Past dates are kept exactly as sent, and `updatedAt` still shows when you made the correction. A request made with a login token keeps ignoring both dates, which is how the app saves.
+With an API key, send any of `createdAt`, `startedAt`, `completedAt` and `cancelledAt`, as ISO 8601. Past dates are kept exactly as sent, and `updatedAt` still shows when you made the correction. A request made with a login token keeps ignoring all four, which is how the app saves.
 
 | Field | Rule |
 |-------|------|
-| `createdAt` | May not be later than the `completedAt` the work order ends up with. |
-| `completedAt` | The work order must end up `completed`, so send `status` with it if it is not completed yet. May not be earlier than `createdAt`. |
+| `createdAt` | May not be later than any other date the work order ends up with. |
+| `startedAt` | The work order must end up `in-progress`, `waiting-parts`, `completed` or `cancelled`, so send `status` with it if it is not. May not be earlier than `createdAt`. |
+| `completedAt` | The work order must end up `completed`, so send `status` with it if it is not completed yet. May not be earlier than `createdAt` or `startedAt`. |
+| `cancelledAt` | The work order must end up `cancelled`, so send `status` with it if it is not cancelled yet. May not be earlier than `createdAt` or `startedAt`. |
 
-A bad date gets a `400` and nothing is saved. A work order loaded without its dates has today as its `createdAt`, so a past `completedAt` sent alone gets that `400`. Send both together:
+A bad date gets a `400` and nothing is saved. A work order loaded without its dates has today as its `createdAt`, so a past `completedAt` sent alone gets that `400`. Send them together:
 
 ```json
 {
   "createdAt": "2024-10-15T10:30:00Z",
+  "startedAt": "2024-11-01T08:00:00Z",
   "completedAt": "2024-11-01T15:10:00Z"
 }
 ```
 
-- **Moving to completed.** A `completedAt` you send replaces the time of the call. A PM's strategy takes its Last Performed from this date too. It only ever moves forward.
-- **Sending a row back.** `null`, or the value already stored, counts as not sent. If you read a work order and send it back, its dates stay put, and reopening it still clears `completedAt`.
-- **Unassigned work orders.** With a new date in the request, the rest of the body saves as usual when `assignedTo` is `"unassigned"`, `""` or `null`. Without one, that value only clears the assignee and every other field is ignored.
-- **Grouped work orders.** On a group, `createdAt` changes the group itself, not its child work orders. With `completeChildren`, `completedAt` also goes on the children that closes. Dates are refused alongside `addAssetIds`.
+- **Changing status.** A `startedAt`, `completedAt` or `cancelledAt` you send replaces the time of the call. A PM's strategy takes its Last Performed from `completedAt` too. It only ever moves forward.
+- **Sending a row back.** `null`, or the value already stored, counts as not sent. If you read a work order and send it back, its dates stay put, and reopening it still clears `completedAt` and `cancelledAt`.
+- **Grouped work orders.** On a group, `createdAt`, `startedAt` and `cancelledAt` change the group itself, not its child work orders. With `completeChildren`, `completedAt` also goes on the children that closes, and `startedAt` is refused. Dates are refused alongside `addAssetIds`.
+
+`dueDate` and `scheduledStartTime` still have to be in the future on PUT, even with an API key. A value that is already stored can be sent back unchanged.
+
+### How do I clear the assignee?
+
+With an API key, send `assignedTo` as `"unassigned"`, `""` or `null`. What happens depends on the rest of the request:
+
+| The request | What happens |
+|-------------|--------------|
+| Only `assignedTo`, on a work order someone is assigned to | The assignee is cleared. An active work order goes back to `open` and loses its `scheduledStartTime`, and its tool reservations are cancelled. |
+| `assignedTo` and other fields, on a work order someone is assigned to | The assignee is cleared and the other fields save. If you do not send `status`, an active work order goes back to `open`. If you do not send `scheduledStartTime`, it is cleared. |
+| Any of these, on a work order nobody is assigned to | Nothing to clear. The other fields save and the status stays as it is. This is the case when you read an unassigned work order, edit it and send it back. |
+
+A request made with a login token always takes the first row and ignores other fields, which is how the app's clear assignee action works.
 
 ## Delete Work Order
 
