@@ -154,11 +154,13 @@ curl -X GET "https://api-acme.f7i.ai/rcm/work-orders?assignedTo=all&status=in-pr
 | `conditionFound` | string | `as_expected`, `early_wear`, `failure_imminent`, `already_failed` or `no_access`. |
 | `createdAt` | string | ISO 8601. For imports: keeps the original raised date. Defaults to now. |
 | `startedAt` | string | ISO 8601. API key only. For imports: when work began. MTTR is measured from this date. Needs a `status` of `in-progress`, `waiting-parts`, `completed` or `cancelled`, and may not be before `createdAt`. |
-| `completedAt` | string | ISO 8601. For imports: the original completion date. Needs a completed `status` and may not be before `createdAt` or `startedAt`. Does not move a PM strategy's Last Performed. |
+| `completedAt` | string | ISO 8601. For imports: the original completion date. Needs a completed `status` and may not be before `createdAt` or `startedAt`. With an API key, a PM's strategy takes its Last Performed and Next Due from this date. |
 | `cancelledAt` | string | ISO 8601. API key only. For imports: the original cancellation date. Needs a cancelled `status` and may not be before `createdAt` or `startedAt`. |
 | `metadata` | object | Free-form data of your own. |
 | `customFields` | object | Free-form data of your own. |
 | `autoKitParts` | boolean | Default `true`. When a `componentId` is given, the component's parts are added to the work order. Send `false` to skip that. |
+
+**Loading completed PMs.** With an API key, a completed PM sent with `completedAt` moves its strategy's Last Performed and Next Due. Last Performed only ever moves forward, so the order of a load does not matter. Next Due is worked out from that date. If the latest completion you load is old, the strategy can show as overdue, and a Next Due set by hand can move earlier.
 
 **Request Body:**
 ```json
